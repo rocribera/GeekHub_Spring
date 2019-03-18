@@ -48,6 +48,9 @@ public class User implements Serializable {
   @JsonView(Views.Complete.class)
   private Collection<Task> tasks;
 
+  @ManyToMany(cascade = CascadeType.ALL)
+  private Collection<Game> games = new ArrayList<>();
+
   public Long getId() {
     return id;
   }
@@ -71,5 +74,7 @@ public class User implements Serializable {
   public void addTask(Task task) {
     tasks.add(task);
   }
+
+  public Collection<Game> getGames() { return games; }
 
 }
