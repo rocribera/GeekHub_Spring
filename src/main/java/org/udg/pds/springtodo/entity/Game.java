@@ -56,6 +56,30 @@ public class Game implements Serializable {
     private Collection<Post> posts;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private Collection<Tag> users = new ArrayList<>();
+    private Collection<User> users = new ArrayList<>();
+
+    public Long getId() {return return id; }
+
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+
+    public String getDescription() { return description; }
+
+    public Collection<Post> getPosts() { return posts; }
+
+    public Collection<User> getUsers() { return users; }
+
+    public Date getDateLastPost() { return dateLastPost; }
+
+    public String getImage() { return image; }
+
+    public Category getCategory() { return category; }
+
+    public void addPost(Post post) { posts.add(post); }
+
+    public void addUser(User user) { users.add(user); }
+
+    public void setCategory(Category category) { this.category = category; }
 
 }
