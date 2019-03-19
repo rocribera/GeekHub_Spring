@@ -24,7 +24,7 @@ public class User implements Serializable {
     this.username = username;
     this.email = email;
     this.password = password;
-    this.tasks = new ArrayList<>();
+    this.posts = new ArrayList<>();
   }
 
   @Id
@@ -46,7 +46,7 @@ public class User implements Serializable {
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
   @JsonView(Views.Complete.class)
-  private Collection<Task> tasks;
+  private Collection<Post> posts;
 
   @ManyToMany(cascade = CascadeType.ALL)
   private Collection<Game> games = new ArrayList<>();
@@ -63,16 +63,16 @@ public class User implements Serializable {
     return password;
   }
 
-  public Collection<Task> getTasks() {
+  public Collection<Post> getPosts() {
     // Since tasks is collection controlled by JPA, it has LAZY loading by default. That means
     // that you have to query the object (calling size(), for example) to get the list initialized
     // More: http://www.javabeat.net/jpa-lazy-eager-loading/
-    tasks.size();
-    return tasks;
+    posts.size();
+    return posts;
   }
 
-  public void addTask(Task task) {
-    tasks.add(task);
+  public void addTask(Post post) {
+    posts.add(post);
   }
 
   public Collection<Game> getGames() { return games; }
