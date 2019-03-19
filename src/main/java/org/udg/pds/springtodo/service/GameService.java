@@ -30,8 +30,6 @@ public class GameService {
     }
 
     public Collection<Game> getGames(Long id){
-        Optional<User> u = userService.crud().findById(id);
-        if (!u.isPresent()) throw new ServiceException("User does not exists");
-        return u.get().getGames();
+        //TO-DO
     }
 }

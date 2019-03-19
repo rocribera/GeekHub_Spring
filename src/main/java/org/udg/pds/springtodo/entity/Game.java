@@ -32,11 +32,11 @@ public class Game implements Serializable {
     private Long id;
 
     @NotNull
-    @JsonView(Views.Private.class)
+    @JsonView(Views.Public.class)
     private String name;
 
     @NotNull
-    @JsonView(Views.Private.class)
+    @JsonView(Views.Public.class)
     private String image;
 
     @JsonSerialize(using = JsonDateSerializer.class)
@@ -44,12 +44,11 @@ public class Game implements Serializable {
     private Date dateLastPost;
 
     @NotNull
-    @JsonView(Views.Private.class)
+    @JsonView(Views.Public.class)
     private String description;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "fk_category")
-    private Category category;
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Collection<Category> categorys;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
     @JsonView(Views.Complete.class)
@@ -58,7 +57,8 @@ public class Game implements Serializable {
     @ManyToMany(cascade = CascadeType.ALL)
     private Collection<User> users = new ArrayList<>();
 
-    public Long getId() {return return id; }
+    @JsonView(Views.Private.class)
+    public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
 
@@ -74,12 +74,12 @@ public class Game implements Serializable {
 
     public String getImage() { return image; }
 
-    public Category getCategory() { return category; }
+    public Collection<Category> getCategorys() { return categorys; }
 
     public void addPost(Post post) { posts.add(post); }
 
     public void addUser(User user) { users.add(user); }
 
-    public void setCategory(Category category) { this.category = category; }
+    public void addCategory(Category category) { categorys.add(category); }
 
 }
