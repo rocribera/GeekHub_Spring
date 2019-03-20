@@ -3,7 +3,6 @@ package org.udg.pds.springtodo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.udg.pds.springtodo.controller.exceptions.ServiceException;
-import org.udg.pds.springtodo.entity.User;
 import org.udg.pds.springtodo.repository.GameRepository;
 import org.udg.pds.springtodo.entity.Game;
 
@@ -16,9 +15,6 @@ public class GameService {
     @Autowired
     private GameRepository gameRepository;
 
-    @Autowired
-    UserService userService;
-
     public GameRepository crud() {
         return gameRepository;
     }
@@ -29,7 +25,9 @@ public class GameService {
         return g.get();
     }
 
-    public Collection<Game> getGames(Long id){
-        //TO-DO
+    public Collection<Game> getGames(){
+        Collection<Game> g = gameRepository.getAllGames();
+        if(g.isEmpty()) throw new ServiceException("There is no games in the DB");
+        return g;
     }
 }

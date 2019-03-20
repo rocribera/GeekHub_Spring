@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-@Entity
+@Entity(name = "games")
 public class Game implements Serializable {
 
     public Game() {}

@@ -26,8 +26,8 @@ public class GameController extends BaseController{
     @GetMapping
     public Collection<Game> listAllGames(HttpSession session) {
 
-        Long userId = getLoggedUser(session);
-        return gameService.getGames(userId);
+        getLoggedUser(session);
+        return gameService.getGames();
     }
 
     @DeleteMapping(path="/{id}")
