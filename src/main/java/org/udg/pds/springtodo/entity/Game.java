@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.udg.pds.springtodo.serializer.JsonDateDeserializer;
 import org.udg.pds.springtodo.serializer.JsonDateSerializer;
 
@@ -15,6 +17,7 @@ import java.util.Collection;
 import java.util.Date;
 
 @Entity(name = "games")
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class Game implements Serializable {
 
     public Game() {}
@@ -35,26 +38,32 @@ public class Game implements Serializable {
     @JsonView(Views.Public.class)
     private String name;
 
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    @JsonView(Views.Public.class)
+    private Collection<Category> categories = new ArrayList<>();
+
     @NotNull
     @JsonView(Views.Public.class)
     private String image;
 
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(as= JsonDateDeserializer.class)
+    @JsonView(Views.Public.class)
     private Date dateLastPost;
 
     @NotNull
     @JsonView(Views.Public.class)
     private String description;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Collection<Category> categorys;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
-    @JsonView(Views.Complete.class)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER, mappedBy = "game")
+    @Fetch(value = FetchMode.SUBSELECT)
+    @JsonIgnore
     private Collection<Post> posts;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER, mappedBy = "games")
+    @Fetch(value = FetchMode.SUBSELECT)
+    @JsonIgnore
     private Collection<User> users = new ArrayList<>();
 
     @JsonView(Views.Private.class)
@@ -66,20 +75,30 @@ public class Game implements Serializable {
 
     public String getDescription() { return description; }
 
-    public Collection<Post> getPosts() { return posts; }
+    public Collection<Post> getPosts() {
+        posts.size();
+        return posts;
+    }
 
-    public Collection<User> getUsers() { return users; }
+    public Collection<User> getUsers() {
+        users.size();
+        return users;
+    }
 
     public Date getDateLastPost() { return dateLastPost; }
 
+    public void setDataLastPost(Date dateLastPost) {
+        this.dateLastPost = dateLastPost;
+    }
+
     public String getImage() { return image; }
 
-    public Collection<Category> getCategorys() { return categorys; }
+    public Collection<Category> getCategories() { return categories; }
 
     public void addPost(Post post) { posts.add(post); }
 
     public void addUser(User user) { users.add(user); }
 
-    public void addCategory(Category category) { categorys.add(category); }
+    public void addCategory(Category category) { categories.add(category); }
 
 }
