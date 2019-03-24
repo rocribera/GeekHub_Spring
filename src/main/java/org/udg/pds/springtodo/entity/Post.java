@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+@Entity
 public class Post implements Serializable {
 
     public Post() {}
@@ -15,6 +16,14 @@ public class Post implements Serializable {
         this.title = title;
         this.description = description;
         this.active = active;
+    }
+
+    public Post(String title,Boolean active, String description, Game game, User user){
+        this.title = title;
+        this.description = description;
+        this.active = active;
+        this.game = game;
+        this.user = user;
     }
 
     @Id
@@ -35,19 +44,11 @@ public class Post implements Serializable {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "fk_user")
     private User user;
-
-    @Column(name = "fk_user", insertable = false, updatable = false)
-    private long userId;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "fk_game")
     private Game game;
-
-    @Column(name = "fk_game", insertable = false, updatable = false)
-    private long gameId;
 
     public Long getId() { return id; }
 
@@ -64,10 +65,6 @@ public class Post implements Serializable {
     public Game getGame() { return game; }
 
     public User getUser() { return user; }
-
-    public long getUserId() { return userId; }
-
-    public long getGameId() { return gameId; }
 
     public void setUser(User user) {
         this.user = user;
