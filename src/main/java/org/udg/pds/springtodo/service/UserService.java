@@ -1,13 +1,10 @@
 package org.udg.pds.springtodo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.udg.pds.springtodo.controller.exceptions.ServiceException;
-import org.udg.pds.springtodo.entity.Task;
+import org.udg.pds.springtodo.entity.Game;
 import org.udg.pds.springtodo.entity.User;
 import org.udg.pds.springtodo.repository.UserRepository;
 
@@ -19,6 +16,9 @@ public class UserService {
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private GameService gameService;
 
   public UserRepository crud() {
     return userRepository;
@@ -64,9 +64,31 @@ public class UserService {
 
   public User getUserProfile(long id) {
     User u = this.getUser(id);
-    for (Task t : u.getTasks())
-        t.getTags();
+    //for (Task t : u.getTasks())
+    //    t.getTags();
     return u;
+  }
+
+  @Transactional
+  public void addGame(Long userId, Long gameId) {
+      User u = this.getUser(userId);
+
+      if (u.getId() != userId)
+          throw new ServiceException(("This user is not in the DB"));
+
+      try {
+          Optional<Game> o = gameService.crud().findById(gameId);
+          if (o.isPresent()){
+              u.addGame(o.get());
+              o.get().addUser(u);
+          }
+          else
+              throw new ServiceException("Game does not exists");
+      } catch (Exception ex) {
+          // Very important: if you want that an exception reaches the EJB caller, you have to throw an ServiceException
+          // We catch the normal exception and then transform it in a ServiceException
+          throw new ServiceException(ex.getMessage());
+      }
   }
 
 }

@@ -2,6 +2,8 @@ package org.udg.pds.springtodo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -44,11 +46,13 @@ public class User implements Serializable {
   @JsonIgnore
   private String password;
 
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
   @JsonView(Views.Complete.class)
+  @Fetch(value = FetchMode.SUBSELECT)
   private Collection<Post> posts;
 
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+  @Fetch(value = FetchMode.SUBSELECT)
   private Collection<Game> games = new ArrayList<>();
 
   public Long getId() {
@@ -76,5 +80,9 @@ public class User implements Serializable {
   }
 
   public Collection<Game> getGames() { return games; }
+
+  public void addGame(Game game) { games.add(game); }
+
+  public void addPost(Post post) { posts.add(post); }
 
 }
