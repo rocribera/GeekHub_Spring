@@ -1,6 +1,11 @@
 package org.udg.pds.springtodo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.udg.pds.springtodo.serializer.JsonCategorySerializer;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -8,15 +13,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-@Entity
+@JsonSerialize(using = JsonCategorySerializer.class)
+@Entity(name = "category")
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class Category implements Serializable {
 
     public Category() {}
 
-    public Category(String name, String description){
+    public Category(String name){
         this.name = name;
-        this.description = description;
-        this.games = new ArrayList<>();
     }
 
     @Id
@@ -28,20 +33,16 @@ public class Category implements Serializable {
     @JsonView(Views.Public.class)
     private String name;
 
-    @NotNull
-    @JsonView(Views.Public.class)
-    private String description;
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Collection<Game> games;
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    @JsonIgnore
+    private Collection<Game> games = new ArrayList<>();
 
     public Long getId() {return id; }
 
     public void setId(Long id) { this.id = id; }
 
     public String getName() { return name; }
-
-    public String getDescription() { return description; }
 
     public Collection<Game> getGames() { return games; }
 
