@@ -6,16 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.udg.pds.springtodo.entity.IdObject;
-import org.udg.pds.springtodo.entity.Tag;
-import org.udg.pds.springtodo.entity.User;
-import org.udg.pds.springtodo.service.TagService;
-import org.udg.pds.springtodo.service.TaskService;
-import org.udg.pds.springtodo.service.UserService;
+import org.udg.pds.springtodo.entity.*;
+import org.udg.pds.springtodo.service.*;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Date;
 
 @Service
 public class Global {
@@ -29,11 +24,15 @@ public class Global {
 
     @Autowired
     private
-    TaskService taskService;
+    GameService gameService;
 
     @Autowired
     private
-    TagService tagService;
+    CategoryService categoryService;
+
+    @Autowired
+    private
+    PostService postService;
 
     @Value("${todospring.minio.url:}")
     private String minioURL;
@@ -76,13 +75,26 @@ public class Global {
     }
 
     private void initData() {
+
         logger.info("Starting populating database ...");
         User user = userService.register("usuari", "usuari@hotmail.com", "123456");
-        IdObject taskId = taskService.addTask("Una tasca", user.getId(), new Date(), new Date());
-        Tag tag = tagService.addTag("ATag", "Just a tag");
-        taskService.addTagsToTask(user.getId(), taskId.getId(), new ArrayList<Long>() {{
-            add(tag.getId());
+        Category shooter = categoryService.createCategory("Shooter");
+        Category big_map = categoryService.createCategory("Big map");
+        Category online = categoryService.createCategory("Online");
+        Game game1 = gameService.createGame("Battlefield","https://images.g2a.com/newlayout/270x270/1x1x0/0a80471a22bc/590b27175bafe324f0665b43","Big map with a lot of chaos");
+        gameService.addCategory(game1.getId(), new ArrayList<Long>() {{
+            add(shooter.getId());
+            add(big_map.getId());
+            add(online.getId());
         }});
+        Game game2 = gameService.createGame("Modern Warfare 2","https://hb.imgix.net/46de552d47f87b55668da538d92e4505299370e8.jpg?auto=compress,format&fit=crop&h=353&w=616&s=aac61545579dae3a98edd5c63db41002", "360 sniper");
+        gameService.addCategory(game2.getId(), new ArrayList<Long>() {{
+            add(shooter.getId());
+        }});
+        userService.addGame(user.getId(),game1.getId());
+        userService.addGame(user.getId(),game2.getId());
+        postService.createPost("Sniper 2v2 Rust",true,"I search a new Captain Price",user.getId(),game2.getId());
+        postService.createPost("Sniper 4v4 Terminal",true,"Come on come on let's go",user.getId(),game2.getId());
     }
 
     public MinioClient getMinioClient() {
