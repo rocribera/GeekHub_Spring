@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.udg.pds.springtodo.controller.exceptions.ServiceException;
 import org.udg.pds.springtodo.entity.Category;
+import org.udg.pds.springtodo.entity.Post;
 import org.udg.pds.springtodo.repository.GameRepository;
 import org.udg.pds.springtodo.entity.Game;
 
@@ -69,6 +70,14 @@ public class GameService {
           // We catch the normal exception and then transform it in a ServiceException
           throw new ServiceException(ex.getMessage());
         }
+    }
+
+    public Collection<Post> getListPosts(Long gameId){
+        Game g = this.getGame(gameId);
+        if (g.getId() != gameId)
+            throw new ServiceException(("This game is not in the DB"));
+
+        return g.getPosts();
     }
 
 }
