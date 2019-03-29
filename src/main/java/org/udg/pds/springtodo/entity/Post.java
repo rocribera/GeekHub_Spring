@@ -31,6 +31,14 @@ public class Post implements Serializable {
     @JsonView(Views.Private.class)
     private Long id;
 
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "fk_user")
+    private User user;
+
+    @Column(name = "fk_user", insertable = false, updatable = false)
+    private long userId;
+
     @NotNull
     @JsonView(Views.Public.class)
     private String title;
@@ -44,15 +52,13 @@ public class Post implements Serializable {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
-    private User user;
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
     private Game game;
 
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
+
+    public Long getUserId() { return userId; }
 
     public String getTitle() { return title; }
 

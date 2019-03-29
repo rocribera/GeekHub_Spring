@@ -3,6 +3,7 @@ package org.udg.pds.springtodo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.udg.pds.springtodo.entity.Game;
+import org.udg.pds.springtodo.entity.Post;
 import org.udg.pds.springtodo.service.GameService;
 
 import javax.servlet.http.HttpSession;
@@ -28,6 +29,14 @@ public class GameController extends BaseController{
 
         getLoggedUser(session);
         return gameService.getGames();
+    }
+
+    @GetMapping(path="/{id}/posts")
+    public Collection<Post> listAllPosts(HttpSession session,
+                                         @PathVariable("id") Long id) {
+
+        getLoggedUser(session);
+        return gameService.getListPosts(id);
     }
 
     @DeleteMapping(path="/{id}")
