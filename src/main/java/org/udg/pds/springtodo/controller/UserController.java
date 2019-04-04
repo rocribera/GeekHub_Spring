@@ -18,96 +18,98 @@ import javax.validation.constraints.NotNull;
 @RestController
 public class UserController extends BaseController {
 
-  // This is the EJB used to access user data
-  @Autowired
-  UserService userService;
+    // This is the EJB used to access user data
+    @Autowired
+    UserService userService;
 
-  @PostMapping(path="/login")
-  @JsonView(Views.Private.class)
-  public User login(HttpSession session, @Valid @RequestBody LoginUser user) {
+    @PostMapping(path="/login")
+    @JsonView(Views.Private.class)
+    public User login(HttpSession session, @Valid @RequestBody LoginUser user) {
 
-    checkNotLoggedIn(session);
+        checkNotLoggedIn(session);
 
-    User u = userService.matchPassword(user.username, user.password);
-    session.setAttribute("simpleapp_auth_id", u.getId());
-    return u;
-  }
-
-  @PostMapping(path="/logout")
-  @JsonView(Views.Private.class)
-  public String logout(HttpSession session) {
-
-    getLoggedUser(session);
-
-    session.removeAttribute("simpleapp_auth_id");
-    return BaseController.OK_MESSAGE;
-  }
-
-
-  @DeleteMapping(path="/{id}")
-  public String deleteUser(HttpSession session, @PathVariable("id") Long userId) {
-
-    Long loggedUserId = getLoggedUser(session);
-
-    if (!loggedUserId.equals(userId))
-      throw new ControllerException("You cannot delete other users!");
-
-    userService.crud().deleteById(userId);
-    session.removeAttribute("simpleapp_auth_id");
-
-    return BaseController.OK_MESSAGE;
-  }
-
-
-  @PostMapping(path="/register", consumes = "application/json")
-  public String register(HttpSession session, @Valid  @RequestBody RegisterUser ru) {
-
-    checkNotLoggedIn(session);
-    userService.register(ru.username, ru.email, ru.password);
-    return BaseController.OK_MESSAGE;
-
-  }
-
-  @GetMapping(path="/me")
-  @JsonView(Views.Complete.class)
-  public User getUserProfile(HttpSession session) {
-
-    Long loggedUserId = getLoggedUser(session);
-
-    return userService.getUserProfile(loggedUserId);
-  }
-
-  @GetMapping(path="/check")
-  public String checkLoggedIn(HttpSession session) {
-
-    getLoggedUser(session);
-
-    return BaseController.OK_MESSAGE;
-  }
-
-
-  static class LoginUser {
-    @NotNull
-    public String username;
-    @NotNull
-    public String password;
-  }
-
-  static class RegisterUser {
-    @NotNull
-    public String username;
-    @NotNull
-    public String email;
-    @NotNull
-    public String password;
-  }
-
-  static class ID {
-    public Long id;
-
-    public ID(Long id) {
-      this.id = id;
+        User u = userService.matchPassword(user.username, user.password);
+        session.setAttribute("simpleapp_auth_id", u.getId());
+        return u;
     }
-  }
+
+    @PostMapping(path="/logout")
+    @JsonView(Views.Private.class)
+    public String logout(HttpSession session) {
+
+        getLoggedUser(session);
+
+        session.removeAttribute("simpleapp_auth_id");
+        return BaseController.OK_MESSAGE;
+    }
+
+
+    @DeleteMapping(path="/{id}")
+    public String deleteUser(HttpSession session, @PathVariable("id") Long userId) {
+
+        Long loggedUserId = getLoggedUser(session);
+
+        if (!loggedUserId.equals(userId))
+            throw new ControllerException("You cannot delete other users!");
+
+        userService.crud().deleteById(userId);
+        session.removeAttribute("simpleapp_auth_id");
+
+        return BaseController.OK_MESSAGE;
+    }
+
+
+    @PostMapping(path="/register", consumes = "application/json")
+    public User register(HttpSession session, @Valid  @RequestBody RegisterUser ru) {
+
+        checkNotLoggedIn(session);
+        userService.register(ru.username, ru.email, ru.password);
+
+        User u = userService.matchPassword(ru.username, ru.password);
+        session.setAttribute("simpleapp_auth_id", u.getId());
+        return u;
+    }
+
+    @GetMapping(path="/me")
+    @JsonView(Views.Complete.class)
+    public User getUserProfile(HttpSession session) {
+
+        Long loggedUserId = getLoggedUser(session);
+
+        return userService.getUserProfile(loggedUserId);
+    }
+
+    @GetMapping(path="/check")
+    public String checkLoggedIn(HttpSession session) {
+
+        getLoggedUser(session);
+
+        return BaseController.OK_MESSAGE;
+    }
+
+
+    static class LoginUser {
+        @NotNull
+        public String username;
+        @NotNull
+        public String password;
+    }
+
+    static class RegisterUser {
+        @NotNull
+        public String username;
+        @NotNull
+        public String email;
+        @NotNull
+        public String password;
+    }
+
+    static class ID {
+        public Long id;
+
+        public ID(Long id) {
+            this.id = id;
+        }
+    }
 
 }
