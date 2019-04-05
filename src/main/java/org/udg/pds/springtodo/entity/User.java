@@ -14,75 +14,100 @@ import java.util.Collection;
 @Entity(name = "users")
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"email", "username"}))
 public class User implements Serializable {
-  /**
-   * Default value included to remove warning. Remove or modify at will. *
-   */
-  private static final long serialVersionUID = 1L;
+    /**
+     * Default value included to remove warning. Remove or modify at will. *
+     */
+    private static final long serialVersionUID = 1L;
 
-  public User() {
-  }
+    public User() {
+    }
 
-  public User(String username, String email, String password) {
-    this.username = username;
-    this.email = email;
-    this.password = password;
-    this.posts = new ArrayList<>();
-  }
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.posts = new ArrayList<>();
+        this.valoration = null;
+        //this.desc = null;
+        this.image = null;
+    }
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @JsonView(Views.Private.class)
-  protected Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(Views.Private.class)
+    protected Long id;
 
-  @NotNull
-  @JsonView(Views.Public.class)
-  private String username;
+    @NotNull
+    @JsonView(Views.Public.class)
+    private String username;
 
-  @NotNull
-  @JsonView(Views.Private.class)
-  private String email;
+    @NotNull
+    @JsonView(Views.Private.class)
+    private String email;
 
-  @NotNull
-  @JsonIgnore
-  private String password;
+    @NotNull
+    @JsonIgnore
+    private String password;
 
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
-  @JsonView(Views.Complete.class)
-  @Fetch(value = FetchMode.SUBSELECT)
-  private Collection<Post> posts;
+    @JsonView(Views.Public.class)
+    private String valoration;
 
-  @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-  @Fetch(value = FetchMode.SUBSELECT)
-  private Collection<Game> games = new ArrayList<>();
+    @JsonView(Views.Public.class)
+    private String description;
 
-  public Long getId() {
-    return id;
-  }
+    @JsonView(Views.Public.class)
+    private String image;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
+    @JsonIgnore
+    @Fetch(value = FetchMode.SUBSELECT)
+    private Collection<Post> posts;
 
-  public String getPassword() {
-    return password;
-  }
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    @JsonIgnore
+    private Collection<Game> games = new ArrayList<>();
 
-  public Collection<Post> getPosts() {
-    // Since tasks is collection controlled by JPA, it has LAZY loading by default. That means
-    // that you have to query the object (calling size(), for example) to get the list initialized
-    // More: http://www.javabeat.net/jpa-lazy-eager-loading/
-    posts.size();
-    return posts;
-  }
+    public Long getId() {
+        return id;
+    }
 
-  public void addTask(Post post) {
-    posts.add(post);
-  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-  public Collection<Game> getGames() { return games; }
+    public String getPassword() {
+        return password;
+    }
 
-  public void addGame(Game game) { games.add(game); }
+    public Collection<Post> getPosts() {
+        // Since tasks is collection controlled by JPA, it has LAZY loading by default. That means
+        // that you have to query the object (calling size(), for example) to get the list initialized
+        // More: http://www.javabeat.net/jpa-lazy-eager-loading/
+        posts.size();
+        return posts;
+    }
 
-  public void addPost(Post post) { posts.add(post); }
+    public void addTask(Post post) {
+        posts.add(post);
+    }
+
+    public Collection<Game> getGames() { return games; }
+
+    public void addGame(Game game) { games.add(game); }
+
+    public void addPost(Post post) { posts.add(post); }
+
+    public String getValoration() { return valoration; }
+
+    public void setValoration(String val) { this.valoration = val; }
+
+    public String getDescription() { return description; }
+
+    public void setDescription(String desc) { this.description = desc; }
+
+    public String getImage() { return this.image; }
+
+    public void setImage(String image) { this.image = image; }
 
 }
