@@ -33,11 +33,17 @@ public class Post implements Serializable {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "fk_user")
+    @JoinColumns({
+            @JoinColumn(name="usr_id", referencedColumnName="id"),
+            @JoinColumn(name="usr_usn", referencedColumnName="username")
+    })
     private User user;
 
-    @Column(name = "fk_user", insertable = false, updatable = false)
-    private long userId;
+    @Column(name = "usr_id", insertable = false, updatable = false)
+    private Long userId;
+
+    @Column(name = "usr_usn", insertable = false, updatable = false)
+    private String username;
 
     @NotNull
     @JsonView(Views.Public.class)
@@ -58,13 +64,15 @@ public class Post implements Serializable {
 
     public void setId(Long id) { this.id = id; }
 
-    public Long getUserId() { return userId; }
-
     public String getTitle() { return title; }
 
     public boolean getActive() { return active; }
 
     public String getDescription() { return description; }
+
+    public Long getUserId() { return userId; }
+
+    public String getUsername() { return username; }
 
     public void setActive(Boolean active) { this.active = active; }
 
