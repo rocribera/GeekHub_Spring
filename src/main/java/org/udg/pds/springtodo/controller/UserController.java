@@ -2,7 +2,6 @@ package org.udg.pds.springtodo.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.udg.pds.springtodo.controller.exceptions.ControllerException;
 import org.udg.pds.springtodo.entity.User;
@@ -84,6 +83,22 @@ public class UserController extends BaseController {
 
         getLoggedUser(session);
 
+        return BaseController.OK_MESSAGE;
+    }
+
+    @PostMapping(path="/me/games/{id}")
+    public String bookmarkGame(HttpSession session, @PathVariable("id") Long gameId){
+
+        Long loggedUserId = getLoggedUser(session);
+        userService.addGame(loggedUserId,gameId);
+
+        return BaseController.OK_MESSAGE;
+    }
+
+    @DeleteMapping(path="/me/games/{id}")
+    public String unsubscribeGame(HttpSession session, @PathVariable("id") Long gameId){
+        Long loggedUserId =getLoggedUser(session);
+        userService.deleteGame(loggedUserId,gameId);
         return BaseController.OK_MESSAGE;
     }
 

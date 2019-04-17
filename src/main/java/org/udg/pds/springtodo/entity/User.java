@@ -28,7 +28,6 @@ public class User implements Serializable {
         this.password = password;
         this.posts = new ArrayList<>();
         this.valoration = null;
-        //this.desc = null;
         this.image = null;
     }
 
@@ -65,7 +64,7 @@ public class User implements Serializable {
 
     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
-    @JsonIgnore
+    @JsonView(Views.Private.class)
     private Collection<Game> games = new ArrayList<>();
 
     public Long getId() {
@@ -92,7 +91,10 @@ public class User implements Serializable {
         posts.add(post);
     }
 
-    public Collection<Game> getGames() { return games; }
+    public Collection<Game> getGames() {
+        posts.size();
+        return games;
+    }
 
     public void addGame(Game game) { games.add(game); }
 
