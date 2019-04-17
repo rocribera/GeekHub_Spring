@@ -79,8 +79,10 @@ public class UserService {
       try {
           Optional<Game> o = gameService.crud().findById(gameId);
           if (o.isPresent()){
-              u.addGame(o.get());
-              o.get().addUser(u);
+              if(!u.getGames().contains(o.get())) {
+                  u.addGame(o.get());
+                  o.get().addUser(u);
+              }
           }
           else
               throw new ServiceException("Game does not exists");
@@ -90,5 +92,20 @@ public class UserService {
           throw new ServiceException(ex.getMessage());
       }
   }
+
+    @Transactional
+    public void deleteGame(Long userId, Long gameId){
+        User user = this.getUser(userId);
+
+        if (user.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+
+        for(Game i : user.getGames()){
+            if(i.getId() == gameId){
+                user.getGames().remove(i);
+                break;
+            }
+        }
+    }
 
 }
