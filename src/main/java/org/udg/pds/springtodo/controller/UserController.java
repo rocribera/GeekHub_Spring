@@ -7,6 +7,7 @@ import org.udg.pds.springtodo.controller.exceptions.ControllerException;
 import org.udg.pds.springtodo.entity.Post;
 import org.udg.pds.springtodo.entity.User;
 import org.udg.pds.springtodo.entity.Views;
+import org.udg.pds.springtodo.service.PostService;
 import org.udg.pds.springtodo.service.UserService;
 
 import javax.servlet.http.HttpSession;
@@ -22,6 +23,9 @@ public class UserController extends BaseController {
     // This is the EJB used to access user data
     @Autowired
     UserService userService;
+
+    @Autowired
+    PostService postService;
 
     @PostMapping(path="/login")
     @JsonView(Views.Private.class)
@@ -108,6 +112,13 @@ public class UserController extends BaseController {
     public Collection<Post> getUserPosts(HttpSession session){
         Long loggedUserId =getLoggedUser(session);
         return userService.getPosts(loggedUserId);
+    }
+
+    @PostMapping(path="/me/posts/{id}")
+    public String changeState(HttpSession session, @PathVariable("id") Long postId){
+        Long loggedUserId =getLoggedUser(session);
+        postService.changeState(postId,loggedUserId);
+        return BaseController.OK_MESSAGE;
     }
 
 
