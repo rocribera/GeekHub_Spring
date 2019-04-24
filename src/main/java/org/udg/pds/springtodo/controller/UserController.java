@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.udg.pds.springtodo.controller.exceptions.ControllerException;
+import org.udg.pds.springtodo.entity.Post;
 import org.udg.pds.springtodo.entity.User;
 import org.udg.pds.springtodo.entity.Views;
 import org.udg.pds.springtodo.service.UserService;
@@ -11,6 +12,7 @@ import org.udg.pds.springtodo.service.UserService;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 
 // This class is used to process all the authentication related URLs
 @RequestMapping(path="/users")
@@ -100,6 +102,12 @@ public class UserController extends BaseController {
         Long loggedUserId =getLoggedUser(session);
         userService.deleteGame(loggedUserId,gameId);
         return BaseController.OK_MESSAGE;
+    }
+
+    @GetMapping(path="/me/posts")
+    public Collection<Post> getUserPosts(HttpSession session){
+        Long loggedUserId =getLoggedUser(session);
+        return userService.getPosts(loggedUserId);
     }
 
 

@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.udg.pds.springtodo.controller.exceptions.ServiceException;
 import org.udg.pds.springtodo.entity.Game;
+import org.udg.pds.springtodo.entity.Post;
 import org.udg.pds.springtodo.entity.User;
 import org.udg.pds.springtodo.repository.UserRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,6 +108,15 @@ public class UserService {
                 break;
             }
         }
+    }
+
+    public Collection<Post> getPosts(Long userId){
+        User user = this.getUser(userId);
+
+        if (user.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+
+        return user.getPosts();
     }
 
 }
