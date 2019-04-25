@@ -26,7 +26,7 @@ public class User implements Serializable {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.posts = new ArrayList<>();
+        this.ownPosts = new ArrayList<>();
         this.valoration = null;
         this.image = null;
     }
@@ -60,7 +60,7 @@ public class User implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
     @JsonIgnore
     @Fetch(value = FetchMode.SUBSELECT)
-    private Collection<Post> posts;
+    private Collection<Post> ownPosts;
 
     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
@@ -83,22 +83,18 @@ public class User implements Serializable {
         // Since tasks is collection controlled by JPA, it has LAZY loading by default. That means
         // that you have to query the object (calling size(), for example) to get the list initialized
         // More: http://www.javabeat.net/jpa-lazy-eager-loading/
-        posts.size();
-        return posts;
-    }
-
-    public void addTask(Post post) {
-        posts.add(post);
+        ownPosts.size();
+        return ownPosts;
     }
 
     public Collection<Game> getGames() {
-        posts.size();
+        games.size();
         return games;
     }
 
     public void addGame(Game game) { games.add(game); }
 
-    public void addPost(Post post) { posts.add(post); }
+    public void addPost(Post post) { ownPosts.add(post); }
 
     public String getValoration() { return valoration; }
 

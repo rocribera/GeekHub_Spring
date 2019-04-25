@@ -91,7 +91,6 @@ public class Global {
         gameService.addCategory(game2.getId(), new ArrayList<Long>() {{
             add(shooter.getId());
         }});
-        userService.addGame(user.getId(),game1.getId());
         userService.addGame(user.getId(),game2.getId());
         postService.createPost("Sniper 2v2 Rust",true,"I search a new Captain Price",user.getId(),game2.getId());
         postService.createPost("Sniper 4v4 Terminal",true,"Come on come on let's go",user.getId(),game2.getId());
