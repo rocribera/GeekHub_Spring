@@ -22,13 +22,16 @@ public class UserService {
   @Autowired
   private GameService gameService;
 
+  @Autowired
+  private PostService postService;
+
   public UserRepository crud() {
     return userRepository;
   }
 
   public User matchPassword(String username, String password) {
 
-    List<User> uc = userRepository.findByUsername(username);
+    List<User> uc = userRepository.findByName(username);
 
     if (uc.size() == 0) throw new ServiceException("User does not exists");
 
@@ -47,7 +50,7 @@ public class UserService {
       throw new ServiceException("Email already exist");
 
 
-    List<User> uUsername = userRepository.findByUsername(username);
+    List<User> uUsername = userRepository.findByName(username);
     if (uUsername.size() > 0)
       throw new ServiceException("Username already exists");
 
@@ -117,6 +120,51 @@ public class UserService {
             throw new ServiceException(("This user is not in the DB"));
 
         return user.getPosts();
+    }
+
+    @Transactional
+    public void followAPost(Long userId, Long postId){
+        User user = this.getUser(userId);
+
+        if (user.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+
+        Post post = postService.getPost(postId);
+
+        if (post.getId() != postId)
+            throw new ServiceException(("This post is not in the DB"));
+
+        if(!user.getFollowedPosts().contains(post)){
+            user.addPostFollowing(post);
+            post.addUserFollowing(user);
+        }
+    }
+
+    @Transactional
+    public void unfollowAPost(Long userId, Long postId){
+        User user = this.getUser(userId);
+
+        if (user.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+
+        Post post = postService.getPost(postId);
+
+        if (post.getId() != postId)
+            throw new ServiceException(("This post is not in the DB"));
+
+        user.removePostFollowing(post);
+        post.removeUserFollowing(user);
+    }
+
+    @Transactional
+    public void updateProfile(Long userId, String description, String image){
+        User user = this.getUser(userId);
+
+        if (user.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+
+        user.setDescription(description);
+        user.setImage(image);
     }
 
 }

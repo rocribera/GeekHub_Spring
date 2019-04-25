@@ -2,10 +2,16 @@ package org.udg.pds.springtodo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.udg.pds.springtodo.serializer.JsonFollowersSerializer;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
 public class Post implements Serializable {
@@ -24,6 +30,7 @@ public class Post implements Serializable {
         this.active = active;
         this.game = game;
         this.user = user;
+        followers = new ArrayList<>();
     }
 
     @Id
@@ -35,7 +42,7 @@ public class Post implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns({
             @JoinColumn(name="usr_id", referencedColumnName="id"),
-            @JoinColumn(name="usr_usn", referencedColumnName="username")
+            @JoinColumn(name="usr_usn", referencedColumnName="name")
     })
     private User user;
 
@@ -43,7 +50,7 @@ public class Post implements Serializable {
     private Long userId;
 
     @Column(name = "usr_usn", insertable = false, updatable = false)
-    private String username;
+    private String name;
 
     @NotNull
     @JsonView(Views.Public.class)
@@ -55,6 +62,12 @@ public class Post implements Serializable {
     @NotNull
     @JsonView(Views.Public.class)
     private String description;
+
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    @JsonSerialize(using = JsonFollowersSerializer.class)
+    @JsonView(Views.Public.class)
+    private Collection<User> followers;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
@@ -72,7 +85,7 @@ public class Post implements Serializable {
 
     public Long getUserId() { return userId; }
 
-    public String getUsername() { return username; }
+    public String getName() { return name; }
 
     public void setActive(Boolean active) { this.active = active; }
 
@@ -87,4 +100,13 @@ public class Post implements Serializable {
     public void setGame(Game game) {
         this.game = game;
     }
+
+    public Collection<User> getFollowers() {
+        followers.size();
+        return followers;
+    }
+
+    public void addUserFollowing(User user){ followers.add(user); }
+
+    public void removeUserFollowing(User user) { followers.remove(user); }
 }
