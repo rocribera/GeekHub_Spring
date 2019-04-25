@@ -92,8 +92,10 @@ public class Global {
             add(shooter.getId());
         }});
         userService.addGame(user.getId(),game2.getId());
-        postService.createPost("Sniper 2v2 Rust",true,"I search a new Captain Price",user.getId(),game2.getId());
+        Post post1 = postService.createPost("Sniper 2v2 Rust",true,"I search a new Captain Price",user.getId(),game2.getId());
         postService.createPost("Sniper 4v4 Terminal",true,"Come on come on let's go",user.getId(),game2.getId());
+        userService.followAPost(user.getId(),post1.getId());
+        userService.updateProfile(user.getId(),"Loud Gamer","https://i.imgur.com/qw72OSB.png");
     }
 
     public MinioClient getMinioClient() {

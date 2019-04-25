@@ -121,6 +121,19 @@ public class UserController extends BaseController {
         return BaseController.OK_MESSAGE;
     }
 
+    @PostMapping(path="/me/follows/{id}")
+    public String followAPost(HttpSession session, @PathVariable("id") Long postId){
+        Long loggedUserId =getLoggedUser(session);
+        userService.followAPost(loggedUserId,postId);
+        return BaseController.OK_MESSAGE;
+    }
+
+    @DeleteMapping(path="/me/follows/{id}")
+    public String unfollowAPost(HttpSession session, @PathVariable("id") Long postId){
+        Long loggedUserId =getLoggedUser(session);
+        userService.unfollowAPost(loggedUserId,postId);
+        return BaseController.OK_MESSAGE;
+    }
 
     static class LoginUser {
         @NotNull
