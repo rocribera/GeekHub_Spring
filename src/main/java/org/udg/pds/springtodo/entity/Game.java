@@ -101,4 +101,6 @@ public class Game implements Serializable {
 
     public void addCategory(Category category) { categories.add(category); }
 
+    public void removePost(Post post) { posts.remove(post); }
+
 }

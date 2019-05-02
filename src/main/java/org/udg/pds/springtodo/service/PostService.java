@@ -9,8 +9,7 @@ import org.udg.pds.springtodo.entity.Post;
 import org.udg.pds.springtodo.entity.User;
 import org.udg.pds.springtodo.repository.PostRepository;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PostService {
@@ -58,5 +57,23 @@ public class PostService {
             throw new ServiceException("This user is not the owner of this post");
 
         post.setActive(!post.getActive());
+    }
+
+    @Transactional
+    public void deletePost(Long postId, Long userId){
+        Post post = this.getPost(postId);
+
+        if (post.getId() != postId)
+            throw new ServiceException(("This post is not in the DB"));
+
+        if(post.getUserId()!=userId)
+            throw new ServiceException("This user is not the owner of this post");
+
+        Collection<User> users = new ArrayList<User>(post.getFollowers());
+        for(User user : users){
+            userService.unfollowAPost(user.getId(),postId);
+        }
+        post.getGame().removePost(post);
+        userService.getUser(userId).removeOwnPost(post);
     }
 }
