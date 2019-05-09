@@ -50,7 +50,7 @@ public class Post implements Serializable {
     private Long userId;
 
     @Column(name = "usr_usn", insertable = false, updatable = false)
-    private String name;
+    private String username;
 
     @NotNull
     @JsonView(Views.Public.class)
@@ -85,7 +85,7 @@ public class Post implements Serializable {
 
     public Long getUserId() { return userId; }
 
-    public String getName() { return name; }
+    public String getUsername() { return username; }
 
     public void setActive(Boolean active) { this.active = active; }
 

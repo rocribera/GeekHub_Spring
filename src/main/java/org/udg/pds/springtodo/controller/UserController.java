@@ -135,6 +135,12 @@ public class UserController extends BaseController {
         return BaseController.OK_MESSAGE;
     }
 
+    @GetMapping(path="/me/postsFollowing")
+    public Collection<Post> getUserPostsFollowing(HttpSession session){
+        Long loggedUserId =getLoggedUser(session);
+        return userService.getPostsFollowing(loggedUserId);
+    }
+
     static class LoginUser {
         @NotNull
         public String username;
