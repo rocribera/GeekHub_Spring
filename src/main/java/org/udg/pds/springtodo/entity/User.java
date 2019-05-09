@@ -29,6 +29,7 @@ public class User implements Serializable {
         this.ownPosts = new ArrayList<>();
         this.valoration=2.5;
         this.image = null;
+        this.token = null;
     }
 
     @Id
@@ -39,6 +40,9 @@ public class User implements Serializable {
     @NotNull
     @JsonView(Views.Public.class)
     private String name;
+
+    @JsonView(Views.Public.class)
+    private String token;
 
     @NotNull
     @JsonView(Views.Private.class)
@@ -79,6 +83,10 @@ public class User implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getToken(){ return token; }
+
+    public void setToken(String tok) { this.token = tok; }
 
     public String getPassword() {
         return password;

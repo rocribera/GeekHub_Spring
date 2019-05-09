@@ -1,5 +1,6 @@
 package org.udg.pds.springtodo.service;
 
+import com.google.firebase.messaging.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ public class PostService {
     public PostRepository crud() { return postRepository; }
 
     @Transactional
-    public Post createPost(String title,Boolean active, String description,Long userId, Long gameId){
+    public Post createPost(String title,Boolean active, String description,Long userId, Long gameId) {
         Game g = gameService.getGame(gameId);
         User u = userService.getUser(userId);
         Post np = new Post(title,active,description,g,u);
@@ -35,6 +36,39 @@ public class PostService {
         g.setDataLastPost(date);
         u.addPost(np);
         postRepository.save(np);
+
+        List<User> listUsers = new ArrayList(g.getUsers());
+        List<String> registrationTokens = null;
+        for(int i = 0; i < listUsers.size(); i++){
+            registrationTokens.add(listUsers.get(i).getToken());
+
+            if((i+1) % 100 == 0){
+                MulticastMessage message = MulticastMessage.builder()
+                        .putData("title", g.getName())
+                        .putData("time", "New post!")
+                        .addAllTokens(registrationTokens)
+                        .build();
+                try {
+                    BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
+                } catch (FirebaseMessagingException e) {
+                    e.printStackTrace();
+                }
+
+                registrationTokens.clear();
+            }
+        }
+
+        MulticastMessage message = MulticastMessage.builder()
+                .putData("title", g.getName())
+                .putData("time", "New post!")
+                .addAllTokens(registrationTokens)
+                .build();
+        try {
+            BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
+        } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
+        }
+
         return np;
     }
 

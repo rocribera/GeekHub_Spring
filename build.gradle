@@ -39,6 +39,8 @@ dependencies {
     apt 'org.projectlombok:lombok:1.18.4'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
+    implementation 'com.google.firebase:firebase-admin:6.8.1'
+
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
