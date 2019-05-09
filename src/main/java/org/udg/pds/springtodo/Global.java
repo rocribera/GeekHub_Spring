@@ -78,6 +78,7 @@ public class Global {
 
         logger.info("Starting populating database ...");
         User user = userService.register("usuari", "usuari@hotmail.com", "123456");
+        User user2 = userService.register("pewdiepie", "pewdie@tseries.com", "tseries");
         Category shooter = categoryService.createCategory("Shooter");
         Category big_map = categoryService.createCategory("Big map");
         Category online = categoryService.createCategory("Online");
@@ -91,11 +92,18 @@ public class Global {
         gameService.addCategory(game2.getId(), new ArrayList<Long>() {{
             add(shooter.getId());
         }});
+        //User 1
         userService.addGame(user.getId(),game2.getId());
         Post post1 = postService.createPost("Sniper 2v2 Rust",true,"I search a new Captain Price",user.getId(),game2.getId());
         postService.createPost("Sniper 4v4 Terminal",true,"Come on come on let's go",user.getId(),game2.getId());
-        userService.followAPost(user.getId(),post1.getId());
-        userService.updateProfile(user.getId(),"Loud Gamer","https://i.imgur.com/qw72OSB.png");
+        userService.updateProfile(user.getId(),"A user like the others","https://i.imgur.com/qw72OSB.png");
+        //User 2
+        userService.addGame(user2.getId(),game1.getId());
+        userService.addGame(user2.getId(),game2.getId());
+        Post post2 = postService.createPost("Team for Conquest",true,"I search people for play conquest",user2.getId(),game1.getId());
+        userService.followAPost(user2.getId(),post1.getId());
+        userService.followAPost(user.getId(),post2.getId());
+        userService.updateProfile(user2.getId(),"Loud Gamer","https://i.imgur.com/qw72OSB.png");
     }
 
     public MinioClient getMinioClient() {
