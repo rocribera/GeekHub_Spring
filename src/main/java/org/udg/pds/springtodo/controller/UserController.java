@@ -135,6 +135,13 @@ public class UserController extends BaseController {
         return BaseController.OK_MESSAGE;
     }
 
+    @PostMapping(path="/me/token")
+    public String addToken(HttpSession session, @Valid  @RequestBody String token){
+        Long loggedUserId =getLoggedUser(session);
+        userService.addToken(loggedUserId,token);
+        return BaseController.OK_MESSAGE;
+    }
+
     static class LoginUser {
         @NotNull
         public String username;
@@ -157,6 +164,11 @@ public class UserController extends BaseController {
         public ID(Long id) {
             this.id = id;
         }
+    }
+
+    static class Token {
+        @NotNull
+        public String token;
     }
 
 }

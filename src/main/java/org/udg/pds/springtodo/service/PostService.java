@@ -38,35 +38,38 @@ public class PostService {
         postRepository.save(np);
 
         List<User> listUsers = new ArrayList(g.getUsers());
-        List<String> registrationTokens = null;
+        List<String> registrationTokens = new ArrayList<>();
         for(int i = 0; i < listUsers.size(); i++){
-            registrationTokens.add(listUsers.get(i).getToken());
+            if(listUsers.get(i).getToken()!=null) {
+                registrationTokens.add(listUsers.get(i).getToken());
 
-            if((i+1) % 100 == 0){
-                MulticastMessage message = MulticastMessage.builder()
-                        .putData("title", g.getName())
-                        .putData("time", "New post!")
-                        .addAllTokens(registrationTokens)
-                        .build();
-                try {
-                    BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
-                } catch (FirebaseMessagingException e) {
-                    e.printStackTrace();
+                if ((i + 1) % 100 == 0) {
+                    MulticastMessage message = MulticastMessage.builder()
+                            .putData("title", g.getName())
+                            .putData("body", "New Post! : "+ title)
+                            .addAllTokens(registrationTokens)
+                            .build();
+                    try {
+                        BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
+                    } catch (FirebaseMessagingException e) {
+                        e.printStackTrace();
+                    }
+
+                    registrationTokens.clear();
                 }
-
-                registrationTokens.clear();
             }
         }
-
-        MulticastMessage message = MulticastMessage.builder()
-                .putData("title", g.getName())
-                .putData("time", "New post!")
-                .addAllTokens(registrationTokens)
-                .build();
-        try {
-            BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
-        } catch (FirebaseMessagingException e) {
-            e.printStackTrace();
+        if(registrationTokens.size()>0) {
+            MulticastMessage message = MulticastMessage.builder()
+                    .putData("title", g.getName())
+                    .putData("body", "New Post! : "+ title)
+                    .addAllTokens(registrationTokens)
+                    .build();
+            try {
+                BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
+            } catch (FirebaseMessagingException e) {
+                e.printStackTrace();
+            }
         }
 
         return np;
