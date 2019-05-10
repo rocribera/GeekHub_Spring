@@ -81,7 +81,7 @@ public class Global {
 
         FileInputStream serviceAccount = null;
         try {
-            serviceAccount = new FileInputStream("build\\resources\\main\\android-pds19-3c-firebase-adminsdk-l76yv-1789b3d812.json");
+            serviceAccount = new FileInputStream("src\\main\\resources\\android-pds19-3c-firebase-adminsdk-l76yv-1789b3d812.json");
 
 
             FirebaseOptions options = new FirebaseOptions.Builder()
