@@ -40,13 +40,14 @@ public class PostService {
         List<User> listUsers = new ArrayList(g.getUsers());
         List<String> registrationTokens = new ArrayList<>();
         for(int i = 0; i < listUsers.size(); i++){
-            if(listUsers.get(i).getToken()!=null) {
+            if(listUsers.get(i).getToken()!=null && listUsers.get(i).getId() != u.getId()) {
                 registrationTokens.add(listUsers.get(i).getToken());
 
                 if ((i + 1) % 100 == 0) {
                     MulticastMessage message = MulticastMessage.builder()
                             .putData("title", g.getName())
-                            .putData("body", "New Post! : "+ title)
+                            .putData("body", "New Post! : " + title)
+                            .putData("gameID", g.getId().toString())
                             .addAllTokens(registrationTokens)
                             .build();
                     try {
@@ -62,7 +63,8 @@ public class PostService {
         if(registrationTokens.size()>0) {
             MulticastMessage message = MulticastMessage.builder()
                     .putData("title", g.getName())
-                    .putData("body", "New Post! : "+ title)
+                    .putData("body", "New Post! : " + title)
+                    .putData("gameID", g.getId().toString())
                     .addAllTokens(registrationTokens)
                     .build();
             try {

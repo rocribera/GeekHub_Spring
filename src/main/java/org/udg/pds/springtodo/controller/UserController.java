@@ -138,6 +138,7 @@ public class UserController extends BaseController {
     @PostMapping(path="/me/token")
     public String addToken(HttpSession session, @Valid  @RequestBody String token){
         Long loggedUserId =getLoggedUser(session);
+        token = token.replace("\"", "");
         userService.addToken(loggedUserId,token);
         return BaseController.OK_MESSAGE;
     }
