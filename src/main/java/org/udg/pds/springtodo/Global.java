@@ -122,7 +122,6 @@ public class Global {
         userService.addGame(user.getId(),game2.getId());
         Post post1 = postService.createPost("Sniper 2v2 Rust",true,"I search a new Captain Price",user.getId(),game2.getId());
         postService.createPost("Sniper 4v4 Terminal",true,"Come on come on let's go",user.getId(),game2.getId());
-
         userService.updateProfile(user.getId(),"A user like the others","https://i.imgur.com/qw72OSB.png");
         //User 2
         userService.addGame(user2.getId(),game1.getId());

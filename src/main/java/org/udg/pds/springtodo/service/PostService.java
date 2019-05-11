@@ -47,6 +47,7 @@ public class PostService {
                     MulticastMessage message = MulticastMessage.builder()
                             .putData("title", g.getName())
                             .putData("body", "New Post! : " + title)
+                            .putData("postID", np.getId().toString())
                             .putData("gameID", g.getId().toString())
                             .addAllTokens(registrationTokens)
                             .build();
@@ -64,6 +65,7 @@ public class PostService {
             MulticastMessage message = MulticastMessage.builder()
                     .putData("title", g.getName())
                     .putData("body", "New Post! : " + title)
+                    .putData("postID", np.getId().toString())
                     .putData("gameID", g.getId().toString())
                     .addAllTokens(registrationTokens)
                     .build();
