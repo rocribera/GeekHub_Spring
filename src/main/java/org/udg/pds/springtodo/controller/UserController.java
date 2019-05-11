@@ -167,9 +167,4 @@ public class UserController extends BaseController {
         }
     }
 
-    static class Token {
-        @NotNull
-        public String token;
-    }
-
 }
