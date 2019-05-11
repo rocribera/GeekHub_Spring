@@ -27,7 +27,7 @@ public class PostService {
     public PostRepository crud() { return postRepository; }
 
     @Transactional
-    public Post createPost(String title,Boolean active, String description,Long userId, Long gameId) {
+    public Post createPost(String title,Boolean active, String description,Long userId, Long gameId){
         Game g = gameService.getGame(gameId);
         User u = userService.getUser(userId);
         Post np = new Post(title,active,description,g,u);
