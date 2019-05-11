@@ -1,5 +1,8 @@
 package org.udg.pds.springtodo.service;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -140,6 +143,22 @@ public class UserService {
         if(!user.getFollowedPosts().contains(post)){
             user.addPostFollowing(post);
             post.addUserFollowing(user);
+        }
+
+        if(post.getUser().getToken() != null) {
+            Message message = Message.builder()
+                    .putData("title", user.getName())
+                    .putData("body", "has followed your post!")
+                    .putData("postID", post.getId().toString())
+                    .putData("gameID", post.getGame().getId().toString())
+                    .setToken(post.getUser().getToken())
+                    .build();
+
+            try {
+                String response = FirebaseMessaging.getInstance().send(message);
+            } catch (FirebaseMessagingException e) {
+                e.printStackTrace();
+            }
         }
     }
 
