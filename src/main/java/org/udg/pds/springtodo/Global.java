@@ -1,5 +1,8 @@
 package org.udg.pds.springtodo;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import io.minio.MinioClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +13,10 @@ import org.udg.pds.springtodo.entity.*;
 import org.udg.pds.springtodo.service.*;
 
 import javax.annotation.PostConstruct;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 @Service
@@ -71,6 +78,24 @@ public class Global {
         if (BASE_URL == null) BASE_URL = "http://localhost";
         BASE_URL += ":" + BASE_PORT;
 
+
+        FileInputStream serviceAccount = null;
+        try {
+            serviceAccount = new FileInputStream("src\\main\\resources\\android-pds19-3c-firebase-adminsdk-l76yv-1789b3d812.json");
+
+
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .build();
+
+            FirebaseApp.initializeApp(options);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         initData();
     }
 
@@ -78,7 +103,8 @@ public class Global {
 
         logger.info("Starting populating database ...");
         User user = userService.register("usuari", "usuari@hotmail.com", "123456");
-        User user2 = userService.register("pewdiepie", "pewdie@tseries.com", "tseries");
+        User user2 = userService.register("usuari2", "usuari2@hotmail.com", "123456");
+
         Category shooter = categoryService.createCategory("Shooter");
         Category big_map = categoryService.createCategory("Big map");
         Category online = categoryService.createCategory("Online");
@@ -96,6 +122,7 @@ public class Global {
         userService.addGame(user.getId(),game2.getId());
         Post post1 = postService.createPost("Sniper 2v2 Rust",true,"I search a new Captain Price",user.getId(),game2.getId());
         postService.createPost("Sniper 4v4 Terminal",true,"Come on come on let's go",user.getId(),game2.getId());
+
         userService.updateProfile(user.getId(),"A user like the others","https://i.imgur.com/qw72OSB.png");
         //User 2
         userService.addGame(user2.getId(),game1.getId());

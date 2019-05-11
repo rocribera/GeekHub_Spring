@@ -170,12 +170,21 @@ public class UserService {
         user.setImage(image);
     }
 
-    public Collection<Post> getPostsFollowing(Long userId){
+    @Transactional
+    public void addToken(Long userId, String token){
         User user = this.getUser(userId);
-
         if (user.getId() != userId)
             throw new ServiceException(("This user is not in the DB"));
+        
+        user.setToken(token);
+    }
 
+  
+    public Collection<Post> getPostsFollowing(Long userId){
+        User user = this.getUser(userId);
+        if (user.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+      
         return user.getFollowedPosts();
     }
 

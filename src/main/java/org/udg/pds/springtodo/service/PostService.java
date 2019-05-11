@@ -1,5 +1,6 @@
 package org.udg.pds.springtodo.service;
 
+import com.google.firebase.messaging.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,44 @@ public class PostService {
         g.setDataLastPost(date);
         u.addPost(np);
         postRepository.save(np);
+
+        List<User> listUsers = new ArrayList(g.getUsers());
+        List<String> registrationTokens = new ArrayList<>();
+        for(int i = 0; i < listUsers.size(); i++){
+            if(listUsers.get(i).getToken()!=null && listUsers.get(i).getId() != u.getId()) {
+                registrationTokens.add(listUsers.get(i).getToken());
+
+                if ((i + 1) % 100 == 0) {
+                    MulticastMessage message = MulticastMessage.builder()
+                            .putData("title", g.getName())
+                            .putData("body", "New Post! : " + title)
+                            .putData("gameID", g.getId().toString())
+                            .addAllTokens(registrationTokens)
+                            .build();
+                    try {
+                        BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
+                    } catch (FirebaseMessagingException e) {
+                        e.printStackTrace();
+                    }
+
+                    registrationTokens.clear();
+                }
+            }
+        }
+        if(registrationTokens.size()>0) {
+            MulticastMessage message = MulticastMessage.builder()
+                    .putData("title", g.getName())
+                    .putData("body", "New Post! : " + title)
+                    .putData("gameID", g.getId().toString())
+                    .addAllTokens(registrationTokens)
+                    .build();
+            try {
+                BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
+            } catch (FirebaseMessagingException e) {
+                e.printStackTrace();
+            }
+        }
+
         return np;
     }
 
