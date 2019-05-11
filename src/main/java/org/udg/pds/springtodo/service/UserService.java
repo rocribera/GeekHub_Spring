@@ -134,6 +134,9 @@ public class UserService {
         if (post.getId() != postId)
             throw new ServiceException(("This post is not in the DB"));
 
+        if (userId == post.getUser().getId())
+            throw new ServiceException("You cannot subscribe to your own Post");
+
         if(!user.getFollowedPosts().contains(post)){
             user.addPostFollowing(post);
             post.addUserFollowing(user);
@@ -170,11 +173,19 @@ public class UserService {
     @Transactional
     public void addToken(Long userId, String token){
         User user = this.getUser(userId);
-
         if (user.getId() != userId)
             throw new ServiceException(("This user is not in the DB"));
-
+        
         user.setToken(token);
+    }
+
+  
+    public Collection<Post> getPostsFollowing(Long userId){
+        User user = this.getUser(userId);
+        if (user.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+      
+        return user.getFollowedPosts();
     }
 
 }
