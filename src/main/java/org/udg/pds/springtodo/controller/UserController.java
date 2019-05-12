@@ -149,6 +149,28 @@ public class UserController extends BaseController {
         return userService.getPostsFollowing(loggedUserId);
     }
 
+    @GetMapping(path="/{id}")
+    @JsonView(Views.Public.class)
+    public User getUserWithID(HttpSession session, @PathVariable("id") Long userId){
+        getLoggedUser(session);
+        return userService.getUser(userId);
+    }
+
+    @GetMapping(path="/{id}/posts")
+    public Collection<Post> getUserWithIDPosts(HttpSession session, @PathVariable("id") Long userId) {
+        getLoggedUser(session);
+        return userService.getPosts(userId);
+    }
+
+    @PostMapping(path="/{id}/valoration")
+    public String valorateUser(HttpSession session, @PathVariable("id") Long userId, @Valid  @RequestBody String valoration){
+        Long loggedUserId = getLoggedUser(session);
+        valoration = valoration.replace("\"", "");
+        double valor = Double.parseDouble(valoration);
+        userService.updateValoration(loggedUserId,userId,valor);
+        return BaseController.OK_MESSAGE;
+    }
+
     static class LoginUser {
         @NotNull
         public String username;
