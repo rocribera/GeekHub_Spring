@@ -10,11 +10,10 @@ import org.udg.pds.springtodo.controller.exceptions.ServiceException;
 import org.udg.pds.springtodo.entity.Game;
 import org.udg.pds.springtodo.entity.Post;
 import org.udg.pds.springtodo.entity.User;
+import org.udg.pds.springtodo.entity.UserValoration;
 import org.udg.pds.springtodo.repository.UserRepository;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -207,4 +206,37 @@ public class UserService {
         return user.getFollowedPosts();
     }
 
+    @Transactional
+    public void updateValoration(Long loggedUserId, Long userId, double valoration) {
+        if(loggedUserId==userId) throw new ServiceException("You cannot valorate yourself");
+
+        User loggedUser = this.getUser(loggedUserId);
+        if (loggedUser.getId() != loggedUserId)
+            throw new ServiceException(("This user is not in the DB"));
+
+        User user = this.getUser(userId);
+        if (user.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+
+
+        boolean isNewValoration=true;
+        double newValoration = 0;
+
+        for(UserValoration uv: user.getUserValorated()){
+            if(uv.getUserValorating()==loggedUser && uv.getUserValorated()==user){
+                uv.setValoration(valoration);
+                isNewValoration=false;
+            }
+            newValoration += uv.getValoration();
+        }
+        if(isNewValoration){
+            UserValoration uv = new UserValoration(loggedUser,user,valoration);
+            loggedUser.addUserValorating(uv);
+            user.addUserValorated(uv);
+            newValoration += valoration;
+        }
+
+        newValoration/=user.getUserValorated().size();
+        user.setValoration(newValoration);
+    }
 }

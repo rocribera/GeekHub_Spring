@@ -34,7 +34,7 @@ public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(Views.Private.class)
+    @JsonView(Views.Public.class)
     protected Long id;
 
     @NotNull
@@ -54,6 +54,16 @@ public class User implements Serializable {
 
     @JsonView(Views.Public.class)
     private double valoration;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "userValorating",fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private Collection<UserValoration> userValorating = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "userValorated",fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private Collection<UserValoration> userValorated = new ArrayList<>();
 
     @JsonView(Views.Public.class)
     private String description;
@@ -134,4 +144,15 @@ public class User implements Serializable {
 
     public void removeOwnPost(Post post) { ownPosts.remove(post); }
 
+    public Collection<UserValoration> getUserValorated() { return userValorated; }
+
+    public Collection<UserValoration> getUserValorating() { return userValorating; }
+
+    public void addUserValorating(UserValoration uv) {
+        userValorating.add(uv);
+    }
+
+    public void addUserValorated(UserValoration uv) {
+        userValorated.add(uv);
+    }
 }
