@@ -171,6 +171,13 @@ public class UserController extends BaseController {
         return BaseController.OK_MESSAGE;
     }
 
+    @PostMapping(path="/me")
+    public String updateProfileInfo(HttpSession session, @Valid  @RequestBody UpdateProfile updatedProfile){
+        Long loggedUserId = getLoggedUser(session);
+        userService.updateProfile(loggedUserId,updatedProfile.name,updatedProfile.description,updatedProfile.image);
+        return BaseController.OK_MESSAGE;
+    }
+
     static class LoginUser {
         @NotNull
         public String username;
@@ -193,6 +200,15 @@ public class UserController extends BaseController {
         public ID(Long id) {
             this.id = id;
         }
+    }
+
+    static class UpdateProfile {
+        @NotNull
+        public String name;
+        @NotNull
+        public String description;
+        @NotNull
+        public String image;
     }
 
 }

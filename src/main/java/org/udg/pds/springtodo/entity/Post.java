@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.udg.pds.springtodo.serializer.JsonFollowersSerializer;
+import org.udg.pds.springtodo.serializer.JsonPostSerializer;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
+@JsonSerialize(using = JsonPostSerializer.class)
 public class Post implements Serializable {
 
     public Post() {}
@@ -40,17 +41,7 @@ public class Post implements Serializable {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumns({
-            @JoinColumn(name="usr_id", referencedColumnName="id"),
-            @JoinColumn(name="usr_usn", referencedColumnName="name")
-    })
     private User user;
-
-    @Column(name = "usr_id", insertable = false, updatable = false)
-    private Long userId;
-
-    @Column(name = "usr_usn", insertable = false, updatable = false)
-    private String username;
 
     @NotNull
     @JsonView(Views.Public.class)
@@ -65,8 +56,7 @@ public class Post implements Serializable {
 
     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
-    @JsonSerialize(using = JsonFollowersSerializer.class)
-    @JsonView(Views.Public.class)
+    @JsonIgnore
     private Collection<User> followers;
 
     @JsonIgnore
@@ -82,10 +72,6 @@ public class Post implements Serializable {
     public boolean getActive() { return active; }
 
     public String getDescription() { return description; }
-
-    public Long getUserId() { return userId; }
-
-    public String getUsername() { return username; }
 
     public void setActive(Boolean active) { this.active = active; }
 

@@ -155,4 +155,6 @@ public class User implements Serializable {
     public void addUserValorated(UserValoration uv) {
         userValorated.add(uv);
     }
+
+    public void setName(String name) { this.name = name; }
 }

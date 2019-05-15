@@ -94,7 +94,7 @@ public class PostService {
         if (post.getId() != postId)
             throw new ServiceException(("This post is not in the DB"));
 
-        if(post.getUserId()!=userId)
+        if(post.getUser().getId()!=userId)
             throw new ServiceException("This user is not the owner of this post");
 
         post.setActive(!post.getActive());
@@ -107,7 +107,7 @@ public class PostService {
         if (post.getId() != postId)
             throw new ServiceException(("This post is not in the DB"));
 
-        if(post.getUserId()!=userId)
+        if(post.getUser().getId()!=userId)
             throw new ServiceException("This user is not the owner of this post");
 
         Collection<User> users = new ArrayList<User>(post.getFollowers());
