@@ -12,6 +12,7 @@ import org.udg.pds.springtodo.entity.Post;
 import org.udg.pds.springtodo.entity.User;
 import org.udg.pds.springtodo.entity.UserValoration;
 import org.udg.pds.springtodo.repository.UserRepository;
+import org.udg.pds.springtodo.repository.UserValorationRepository;
 
 import java.util.*;
 
@@ -20,6 +21,9 @@ public class UserService {
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private UserValorationRepository userValorationRepository;
 
   @Autowired
   private GameService gameService;
@@ -239,5 +243,49 @@ public class UserService {
 
         newValoration/=user.getUserValorated().size();
         user.setValoration(newValoration);
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = this.getUser(userId);
+
+        if (user.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+
+        //Own Posts
+        ArrayList<Post> ownPosts = new ArrayList<>(user.getPosts());
+        for(Post post: ownPosts){
+            postService.deletePost(post.getId(),user.getId());
+            postService.crud().deleteById(post.getId());
+        }
+
+        //Posts subscribed
+        ArrayList<Post> followedPosts = new ArrayList<>(user.getFollowedPosts());
+        for(Post post: followedPosts){
+            user.removePostFollowing(post);
+            post.removeUserFollowing(user);
+        }
+
+        //Games subscribed
+        ArrayList<Game> games = new ArrayList<>(user.getGames());
+        for(Game game: games){
+            user.removeGame(game);
+            game.removeUser(user);
+        }
+
+        ArrayList<UserValoration> userValorated = new ArrayList<>(user.getUserValorated());
+        for(UserValoration uv : userValorated){
+            user.removeUserValorated(uv);
+            uv.getUserValorating().removeUserValorating(uv);
+            userValorationRepository.deleteById(uv.getId());
+        }
+
+        ArrayList<UserValoration> userValorating = new ArrayList<>(user.getUserValorating());
+        for(UserValoration uv : userValorating){
+            user.removeUserValorating(uv);
+            uv.getUserValorated().removeUserValorated(uv);
+            userValorationRepository.deleteById(uv.getId());
+        }
+
     }
 }
