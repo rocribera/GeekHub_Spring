@@ -42,8 +42,8 @@ public class UserController extends BaseController {
     @JsonView(Views.Private.class)
     public String logout(HttpSession session) {
 
-        getLoggedUser(session);
-
+        Long loggedUserId = getLoggedUser(session);
+        userService.deleteToken(loggedUserId);
         session.removeAttribute("simpleapp_auth_id");
         return BaseController.OK_MESSAGE;
     }
