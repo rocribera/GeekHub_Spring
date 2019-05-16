@@ -157,4 +157,11 @@ public class User implements Serializable {
     }
 
     public void setName(String name) { this.name = name; }
+
+    public void removeGame(Game game) { this.games.remove(game); }
+
+    public void removeUserValorated(UserValoration uv) { userValorated.remove(uv); }
+
+    public void removeUserValorating(UserValoration uv) { userValorating.remove(uv); }
+
 }

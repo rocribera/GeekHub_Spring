@@ -103,4 +103,5 @@ public class Game implements Serializable {
 
     public void removePost(Post post) { posts.remove(post); }
 
+    public void removeUser(User user) { users.remove(user); }
 }

@@ -63,6 +63,17 @@ public class UserController extends BaseController {
         return BaseController.OK_MESSAGE;
     }
 
+    @DeleteMapping(path="/me")
+    public String deleteMyUser(HttpSession session){
+        Long loggedUserId = getLoggedUser(session);
+
+        session.removeAttribute("simpleapp_auth_id");
+        userService.deleteUser(loggedUserId);
+        userService.crud().deleteById(loggedUserId);
+
+        return BaseController.OK_MESSAGE;
+
+    }
 
     @PostMapping(path="/register", consumes = "application/json")
     public User register(HttpSession session, @Valid  @RequestBody RegisterUser ru) {
@@ -205,9 +216,9 @@ public class UserController extends BaseController {
     static class UpdateProfile {
         @NotNull
         public String name;
-        @NotNull
+
         public String description;
-        @NotNull
+
         public String image;
     }
 
