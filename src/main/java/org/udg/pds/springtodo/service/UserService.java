@@ -61,6 +61,7 @@ public class UserService {
       throw new ServiceException("Username already exists");
 
     User nu = new User(username, email, password);
+    nu.setImage("https://i.imgur.com/QMGzEcz.png");
     userRepository.save(nu);
     return nu;
   }
@@ -286,6 +287,14 @@ public class UserService {
             uv.getUserValorated().removeUserValorated(uv);
             userValorationRepository.deleteById(uv.getId());
         }
+    }
 
+    @Transactional
+    public void deleteToken(Long userId){
+        User user = this.getUser(userId);
+        if (user.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+
+        user.setToken(null);
     }
 }
