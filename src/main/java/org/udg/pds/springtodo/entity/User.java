@@ -8,8 +8,7 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 @Entity(name = "users")
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"email", "name"}))
@@ -85,6 +84,16 @@ public class User implements Serializable {
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonView(Views.Private.class)
     private Collection<Post> followedPosts = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user1", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<UserMessages> chatsUser1 = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user2", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<UserMessages> chatsUser2 = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -164,4 +173,11 @@ public class User implements Serializable {
 
     public void removeUserValorating(UserValoration uv) { userValorating.remove(uv); }
 
+    public List<UserMessages> getChatsUser1() {return chatsUser1; }
+
+    public List<UserMessages> getChatsUser2() { return chatsUser2; }
+
+    public void addNewChatUser1(UserMessages um) { chatsUser1.add(um); }
+
+    public void addNewChatUser2(UserMessages um) { chatsUser2.add(um); }
 }
