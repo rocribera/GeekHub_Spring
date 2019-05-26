@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 @Service
@@ -40,6 +39,9 @@ public class Global {
     @Autowired
     private
     PostService postService;
+
+    @Autowired
+    private MessageService messageService;
 
     @Value("${todospring.minio.url:}")
     private String minioURL;
@@ -103,7 +105,7 @@ public class Global {
 
         logger.info("Starting populating database ...");
         User user = userService.register("usuari", "usuari@hotmail.com", "123456");
-
+        User user2 = userService.register("pewdiepie", "pewdie@gmail.com", "tseries");
 
         Category shooter = categoryService.createCategory("Shooter");
         Category big_map = categoryService.createCategory("Big map");
@@ -123,6 +125,8 @@ public class Global {
         Post post1 = postService.createPost("Sniper 2v2 Rust",true,"I search a new Captain Price",user.getId(),game2.getId());
         postService.createPost("Sniper 4v4 Terminal",true,"Come on come on let's go",user.getId(),game2.getId());
         userService.updateProfile(user.getId(),"","A user like the others","https://i.imgur.com/qw72OSB.png");
+        messageService.addNewMessage(user.getId(),user2.getId(),"Hola que tal","2019-05-24T21:48:31");
+        messageService.addNewMessage(user2.getId(),user.getId(),"Molt bé","2019-05-24T21:50:31");
     }
 
     public MinioClient getMinioClient() {

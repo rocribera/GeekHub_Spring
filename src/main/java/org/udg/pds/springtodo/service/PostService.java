@@ -45,6 +45,7 @@ public class PostService {
 
                 if ((i + 1) % 100 == 0) {
                     MulticastMessage message = MulticastMessage.builder()
+                            .putData("chat", "0")
                             .putData("title", g.getName())
                             .putData("body", "New Post! : " + title)
                             .putData("postID", np.getId().toString())

@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.udg.pds.springtodo.controller.exceptions.ServiceException;
-import org.udg.pds.springtodo.entity.Game;
-import org.udg.pds.springtodo.entity.Post;
-import org.udg.pds.springtodo.entity.User;
-import org.udg.pds.springtodo.entity.UserValoration;
+import org.udg.pds.springtodo.entity.*;
 import org.udg.pds.springtodo.repository.UserRepository;
 import org.udg.pds.springtodo.repository.UserValorationRepository;
 
@@ -151,6 +148,7 @@ public class UserService {
 
         if(post.getUser().getToken() != null) {
             Message message = Message.builder()
+                    .putData("chat", "0")
                     .putData("title", user.getName())
                     .putData("body", "has followed your post!")
                     .putData("postID", post.getId().toString())
@@ -297,4 +295,8 @@ public class UserService {
 
         user.setToken(null);
     }
+
+
+
+
 }
