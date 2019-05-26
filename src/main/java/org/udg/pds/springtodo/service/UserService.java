@@ -148,6 +148,7 @@ public class UserService {
 
         if(post.getUser().getToken() != null) {
             Message message = Message.builder()
+                    .putData("chat", "0")
                     .putData("title", user.getName())
                     .putData("body", "has followed your post!")
                     .putData("postID", post.getId().toString())

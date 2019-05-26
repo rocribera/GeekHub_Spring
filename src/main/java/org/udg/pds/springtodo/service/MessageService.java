@@ -1,5 +1,7 @@
 package org.udg.pds.springtodo.service;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,6 +81,23 @@ public class MessageService {
                 um.addMessage(new Message(message,createdAt,sender.getId(),um));
                 sender.addNewChatUser1(um);
                 receiver.addNewChatUser2(um);
+            }
+        }
+
+        if(receiver.getToken() != null) {
+            com.google.firebase.messaging.Message notifMessage = com.google.firebase.messaging.Message.builder()
+                    .putData("chat", "1")
+                    .putData("title", sender.getName())
+                    .putData("body", message)
+                    .putData("userID", sender.getId().toString())
+                    .putData("myID", receiver.getId().toString())
+                    .setToken(receiver.getToken())
+                    .build();
+
+            try {
+                String response = FirebaseMessaging.getInstance().send(notifMessage);
+            } catch (FirebaseMessagingException e) {
+                e.printStackTrace();
             }
         }
     }
