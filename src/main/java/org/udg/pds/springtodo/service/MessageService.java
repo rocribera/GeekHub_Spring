@@ -101,5 +101,15 @@ public class MessageService {
             }
         }
     }
+
+    public List<UserMessages> getChats(Long userId) {
+        User user = userService.getUser(userId);
+        if (user.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+
+        List<UserMessages> userMessages = new ArrayList<>(user.getChatsUser1());
+        userMessages.addAll(user.getChatsUser2());
+        return userMessages;
+    }
 }
 

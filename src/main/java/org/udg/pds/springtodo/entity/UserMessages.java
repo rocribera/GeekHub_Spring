@@ -2,8 +2,10 @@ package org.udg.pds.springtodo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.udg.pds.springtodo.serializer.JsonUserMessagesSerializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,32 +13,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@JsonSerialize(using = JsonUserMessagesSerializer.class)
 public class UserMessages implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(Views.Public.class)
+    @JsonIgnore
     protected Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnore
+    @JsonView(Views.Public.class)
     private User user1;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnore
+    @JsonView(Views.Public.class)
     private User user2;
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
-    @JsonView(Views.Public.class)
+    @JsonIgnore
     private List<Message> messages = new ArrayList<>();
 
+    @JsonView(Views.Public.class)
+    private boolean active;
 
     private UserMessages() {}
 
     public UserMessages(User user1, User user2){
         this.user1 = user1;
         this.user2 = user2;
+        this.active = true;
     }
 
     public void setId(Long id) { this.id = id; }
@@ -50,6 +56,10 @@ public class UserMessages implements Serializable {
     public User getUser1() { return user1; }
 
     public User getUser2() { return user2; }
+
+    public boolean isActive() { return active; }
+
+    public void setActive(boolean active) { this.active = active; }
 
     @Override
     public boolean equals(Object obj) {
