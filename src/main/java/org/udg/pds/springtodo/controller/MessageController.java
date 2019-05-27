@@ -3,6 +3,7 @@ package org.udg.pds.springtodo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.udg.pds.springtodo.entity.Message;
+import org.udg.pds.springtodo.entity.UserMessages;
 import org.udg.pds.springtodo.service.MessageService;
 
 import javax.servlet.http.HttpSession;
@@ -16,6 +17,8 @@ public class MessageController extends BaseController {
 
     @Autowired
     MessageService messageService;
+
+    static public long actualId = 0;
 
     @GetMapping(path="/me/{id}")
     public List<Message> getMessageWithUser(HttpSession session, @PathVariable("id") Long receiverId) {
@@ -38,6 +41,27 @@ public class MessageController extends BaseController {
         public String message;
         @NotNull
         public String createdAt;
+    }
+
+    @GetMapping(path = "/me")
+    public List<UserMessages> getAllChats(HttpSession session){
+        Long loggedUserId = getLoggedUser(session);
+        actualId = loggedUserId;
+        return messageService.getChats(loggedUserId,0);
+    }
+
+    @GetMapping(path = "/me/open")
+    public List<UserMessages> getChatsOpen(HttpSession session){
+        Long loggedUserId = getLoggedUser(session);
+        actualId = loggedUserId;
+        return messageService.getChats(loggedUserId,1);
+    }
+
+    @GetMapping(path = "/me/closed")
+    public List<UserMessages> getChatsClosed(HttpSession session){
+        Long loggedUserId = getLoggedUser(session);
+        actualId = loggedUserId;
+        return messageService.getChats(loggedUserId,2);
     }
 
 }

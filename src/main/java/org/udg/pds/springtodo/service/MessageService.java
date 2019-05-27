@@ -101,5 +101,26 @@ public class MessageService {
             }
         }
     }
+
+    public List<UserMessages> getChats(Long userId,int type) { //Type: 0 all, 1 open, 2 closed
+         User user = userService.getUser(userId);
+        if (user.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+
+        List<UserMessages> userMessages = new ArrayList<>();
+        if(type==0){
+            userMessages.addAll(user.getChatsUser1());
+            userMessages.addAll(user.getChatsUser2());
+        }
+        else if(type==1 || type==2) {
+            for(UserMessages um : user.getChatsUser1()){
+                if(type==1 && um.isActive()) userMessages.add(um);
+                else if(type==2 && !um.isActive()) userMessages.add(um);
+            }
+
+        }
+
+        return userMessages;
+    }
 }
 
