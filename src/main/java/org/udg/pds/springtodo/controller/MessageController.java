@@ -44,10 +44,24 @@ public class MessageController extends BaseController {
     }
 
     @GetMapping(path = "/me")
-    public List<UserMessages> getChats(HttpSession session){
+    public List<UserMessages> getAllChats(HttpSession session){
         Long loggedUserId = getLoggedUser(session);
         actualId = loggedUserId;
-        return messageService.getChats(loggedUserId);
+        return messageService.getChats(loggedUserId,0);
+    }
+
+    @GetMapping(path = "/me/open")
+    public List<UserMessages> getChatsOpen(HttpSession session){
+        Long loggedUserId = getLoggedUser(session);
+        actualId = loggedUserId;
+        return messageService.getChats(loggedUserId,1);
+    }
+
+    @GetMapping(path = "/me/closed")
+    public List<UserMessages> getChatsClosed(HttpSession session){
+        Long loggedUserId = getLoggedUser(session);
+        actualId = loggedUserId;
+        return messageService.getChats(loggedUserId,2);
     }
 
 }
