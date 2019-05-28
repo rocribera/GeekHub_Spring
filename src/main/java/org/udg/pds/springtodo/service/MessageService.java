@@ -156,6 +156,22 @@ public class MessageService {
                 throw new ServiceException("User does not have any chat active with "+otherUser.getName());
             }
         }
+
+        if(otherUser.getToken() != null) {
+            com.google.firebase.messaging.Message notifMessage = com.google.firebase.messaging.Message.builder()
+                    .putData("chat", "2")
+                    .putData("title", myUser.getName())
+                    .putData("body", "has closed your chat")
+                    .putData("userId",myUser.getId().toString())
+                    .setToken(otherUser.getToken())
+                    .build();
+
+            try {
+                String response = FirebaseMessaging.getInstance().send(notifMessage);
+            } catch (FirebaseMessagingException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
