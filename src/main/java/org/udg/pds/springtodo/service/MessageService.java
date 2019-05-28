@@ -117,10 +117,46 @@ public class MessageService {
                 if(type==1 && um.isActive()) userMessages.add(um);
                 else if(type==2 && !um.isActive()) userMessages.add(um);
             }
-
+            for(UserMessages um : user.getChatsUser2()){
+                if(type==1 && um.isActive()) userMessages.add(um);
+                else if(type==2 && !um.isActive()) userMessages.add(um);
+            }
         }
 
         return userMessages;
     }
+
+    @Transactional
+    public void closeChat(Long myId, Long userId) {
+        User myUser = userService.getUser(myId);
+        if (myUser.getId() != myId)
+            throw new ServiceException(("This user is not in the DB"));
+        User otherUser = userService.getUser(userId);
+        if (otherUser.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+        int index = -1;
+        int i=0;
+        while(index==-1 && i<myUser.getChatsUser1().size()){
+            if(myUser.getChatsUser1().get(i).compare(myUser,otherUser)) index=i;
+            i++;
+        }
+        if(index!=-1){
+            myUser.getChatsUser1().get(index).setActive(false);
+        }
+        else{
+            i=0;
+            while(index==-1 && i<myUser.getChatsUser2().size()){
+                if(myUser.getChatsUser2().get(i).compare(myUser,otherUser)) index=i;
+                i++;
+            }
+            if(index!=-1){
+                myUser.getChatsUser2().get(index).setActive(false);
+            }
+            else{
+                throw new ServiceException("User does not have any chat active with "+otherUser.getName());
+            }
+        }
+    }
+
 }
 
