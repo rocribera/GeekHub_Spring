@@ -64,4 +64,11 @@ public class MessageController extends BaseController {
         return messageService.getChats(loggedUserId,2);
     }
 
+    @PostMapping(path = "/me/{id}/close")
+    public String closeChat(HttpSession session,@PathVariable("id") Long userId){
+        Long loggedUserId = getLoggedUser(session);
+        messageService.closeChat(loggedUserId,userId);
+        return BaseController.OK_MESSAGE;
+    }
+
 }
