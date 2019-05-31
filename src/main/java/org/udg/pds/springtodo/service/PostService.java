@@ -118,4 +118,15 @@ public class PostService {
         post.getGame().removePost(post);
         userService.getUser(userId).removeOwnPost(post);
     }
+
+    public Collection<User> getFollowers(Long userId, Long postId) {
+        Post post = this.getPost(postId);
+        if (post.getId() != postId)
+            throw new ServiceException(("This post is not in the DB"));
+
+        if(post.getUser().getId()!=userId)
+            throw new ServiceException("This user is not the owner of this post");
+
+        return post.getFollowers();
+    }
 }
