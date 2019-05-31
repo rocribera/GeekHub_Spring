@@ -76,11 +76,7 @@ public class MessageService {
             if (index != -1)
                 sender.getChatsUser2().get(index).addMessage(new Message(message, createdAt, sender.getId(), sender.getChatsUser2().get(index)));
             else{
-                //Això s'ha de fer quan s'obri un chat, no aquí
-                UserMessages um = new UserMessages(sender,receiver);
-                um.addMessage(new Message(message,createdAt,sender.getId(),um));
-                sender.addNewChatUser1(um);
-                receiver.addNewChatUser2(um);
+                throw new ServiceException("Chat not opened");
             }
         }
 
@@ -174,5 +170,41 @@ public class MessageService {
         }
     }
 
+    @Transactional
+    public UserMessages openChat(Long myId, Long userId) {
+        User myUser = userService.getUser(myId);
+        if (myUser.getId() != myId)
+            throw new ServiceException(("This user is not in the DB"));
+        User otherUser = userService.getUser(userId);
+        if (otherUser.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+        int index = -1;
+        int i=0;
+        while(index==-1 && i<myUser.getChatsUser1().size()){
+            if(myUser.getChatsUser1().get(i).compare(myUser,otherUser)) index=i;
+            i++;
+        }
+        if(index!=-1){
+            myUser.getChatsUser1().get(index).setActive(true);
+            return myUser.getChatsUser1().get(index);
+        }
+        else{
+            i=0;
+            while(index==-1 && i<myUser.getChatsUser2().size()){
+                if(myUser.getChatsUser2().get(i).compare(myUser,otherUser)) index=i;
+                i++;
+            }
+            if(index!=-1){
+                myUser.getChatsUser2().get(index).setActive(true);
+                return myUser.getChatsUser2().get(index);
+            }
+            else{
+                UserMessages um = new UserMessages(myUser,otherUser);
+                myUser.addNewChatUser1(um);
+                otherUser.addNewChatUser2(um);
+                return um;
+            }
+        }
+    }
 }
 
