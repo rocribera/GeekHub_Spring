@@ -71,4 +71,10 @@ public class MessageController extends BaseController {
         return BaseController.OK_MESSAGE;
     }
 
+    @PostMapping(path = "/me/{id}/open")
+    public UserMessages openChat(HttpSession session,@PathVariable("id") Long userId){
+        Long loggedUserId = getLoggedUser(session);
+        return messageService.openChat(loggedUserId,userId);
+    }
+
 }
