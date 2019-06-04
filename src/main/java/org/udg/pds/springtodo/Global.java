@@ -125,9 +125,7 @@ public class Global {
         Post post1 = postService.createPost("Sniper 2v2 Rust",true,"I search a new Captain Price",user.getId(),game2.getId());
         postService.createPost("Sniper 4v4 Terminal",true,"Come on come on let's go",user.getId(),game2.getId());
         userService.updateProfile(user.getId(),"","A user like the others","https://i.imgur.com/qw72OSB.png");
-        messageService.openChat(user.getId(),user2.getId());
-        messageService.addNewMessage(user.getId(),user2.getId(),"Hola que tal","2019-05-24T21:48:31");
-        messageService.addNewMessage(user2.getId(),user.getId(),"Molt bé","2019-05-24T21:50:31");
+        userService.followAPost(user2.getId(),post1.getId());
     }
 
     public MinioClient getMinioClient() {

@@ -49,7 +49,7 @@ public class MessageService {
     }
 
     @Transactional
-    public void addNewMessage(Long senderId, Long receiverId, String message, String createdAt){
+    public int addNewMessage(Long senderId, Long receiverId, String message, String createdAt){
         User sender = userService.getUser(senderId);
         if (sender.getId() != senderId)
             throw new ServiceException(("This user is not in the DB"));
@@ -66,15 +66,20 @@ public class MessageService {
             i++;
         }
 
-        if(index!=-1) sender.getChatsUser1().get(index).addMessage(new Message(message,createdAt,sender.getId(),sender.getChatsUser1().get(index)));
+        if(index!=-1){
+            if(sender.getChatsUser1().get(index).isActive()) sender.getChatsUser1().get(index).addMessage(new Message(message,createdAt,sender.getId(),sender.getChatsUser1().get(index)));
+            else return 1;
+        }
         else {
             i = 0;
             while (index == -1 && i < sender.getChatsUser2().size()) {
                 if (sender.getChatsUser2().get(i).compare(sender, receiver)) index = i;
                 i++;
             }
-            if (index != -1)
-                sender.getChatsUser2().get(index).addMessage(new Message(message, createdAt, sender.getId(), sender.getChatsUser2().get(index)));
+            if (index != -1) {
+                if(sender.getChatsUser2().get(index).isActive()) sender.getChatsUser2().get(index).addMessage(new Message(message, createdAt, sender.getId(), sender.getChatsUser2().get(index)));
+                else return 1;
+            }
             else{
                 throw new ServiceException("Chat not opened");
             }
@@ -96,6 +101,8 @@ public class MessageService {
                 e.printStackTrace();
             }
         }
+
+        return 0;
     }
 
     public List<UserMessages> getChats(Long userId,int type) { //Type: 0 all, 1 open, 2 closed
@@ -185,7 +192,7 @@ public class MessageService {
             i++;
         }
         if(index!=-1){
-            myUser.getChatsUser1().get(index).setActive(true);
+            if(myUser.getChatsUser1().get(index).getBlock()==0) myUser.getChatsUser1().get(index).setActive(true);
             return myUser.getChatsUser1().get(index);
         }
         else{
@@ -195,7 +202,7 @@ public class MessageService {
                 i++;
             }
             if(index!=-1){
-                myUser.getChatsUser2().get(index).setActive(true);
+                if(myUser.getChatsUser2().get(index).getBlock()==0) myUser.getChatsUser2().get(index).setActive(true);
                 return myUser.getChatsUser2().get(index);
             }
             else{

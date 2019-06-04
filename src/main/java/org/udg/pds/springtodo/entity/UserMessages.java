@@ -37,12 +37,16 @@ public class UserMessages implements Serializable {
     @JsonView(Views.Public.class)
     private boolean active;
 
+    @JsonView(Views.Public.class)
+    private long block;
+
     private UserMessages() {}
 
     public UserMessages(User user1, User user2){
         this.user1 = user1;
         this.user2 = user2;
         this.active = true;
+        this.block = 0;
     }
 
     public void setId(Long id) { this.id = id; }
@@ -69,4 +73,8 @@ public class UserMessages implements Serializable {
     public boolean compare(User user1, User user2){
         return (this.user1 == user1 && this.user2 == user2) || (this.user1 == user2 && this.user2 == user1);
     }
+
+    public long getBlock() { return block; }
+
+    public void setBlock(long block) { this.block = block; }
 }

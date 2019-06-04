@@ -28,6 +28,9 @@ public class UserService {
   @Autowired
   private PostService postService;
 
+  @Autowired
+  private MessageService messageService;
+
   public UserRepository crud() {
     return userRepository;
   }
@@ -297,6 +300,79 @@ public class UserService {
     }
 
 
+    public String getBlockUser(Long myId, Long userId) {
+        User myUser = getUser(myId);
+        if (myUser.getId() != myId)
+            throw new ServiceException(("This user is not in the DB"));
+        User otherUser = getUser(userId);
+        if (otherUser.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+        int index = -1;
+        int i=0;
+        while(index==-1 && i<myUser.getChatsUser1().size()){
+            if(myUser.getChatsUser1().get(i).compare(myUser,otherUser)) index=i;
+            i++;
+        }
+        if(index!=-1){
+            return String.valueOf(myUser.getChatsUser1().get(index).getBlock());
+        }
+        else{
+            i=0;
+            while(index==-1 && i<myUser.getChatsUser2().size()){
+                if(myUser.getChatsUser2().get(i).compare(myUser,otherUser)) index=i;
+                i++;
+            }
+            if(index!=-1){
+                return String.valueOf(myUser.getChatsUser2().get(index).getBlock());
+            }
+            else{
+                return "0";
+            }
+        }
+    }
 
+    @Transactional
+    public void blockUser(Long myId, Long userId, int type) {
+        User myUser = this.getUser(myId);
+        if (myUser.getId() != myId)
+            throw new ServiceException(("This user is not in the DB"));
+        User otherUser = this.getUser(userId);
+        if (otherUser.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
+        int index = -1;
+        int i=0;
+        while(index==-1 && i<myUser.getChatsUser1().size()){
+            if(myUser.getChatsUser1().get(i).compare(myUser,otherUser)) index=i;
+            i++;
+        }
+        if(index!=-1){
+            if(type==1){
+                myUser.getChatsUser1().get(index).setBlock(myId);
+                messageService.closeChat(myId,userId);
+            }
+            else myUser.getChatsUser1().get(index).setBlock(0);
+        }
+        else{
+            i=0;
+            while(index==-1 && i<myUser.getChatsUser2().size()){
+                if(myUser.getChatsUser2().get(i).compare(myUser,otherUser)) index=i;
+                i++;
+            }
+            if(index!=-1){
+                if(type==1) {
+                    myUser.getChatsUser2().get(index).setBlock(myId);
+                    messageService.closeChat(myId,userId);
+                }
+                else myUser.getChatsUser2().get(index).setBlock(0);
+            }
+            else{
+                UserMessages um = new UserMessages(myUser,otherUser);
+                if(type==1) um.setBlock(myId);
+                um.setActive(false);
+                myUser.addNewChatUser1(um);
+                otherUser.addNewChatUser2(um);
+            }
+        }
 
+    }
 }
