@@ -301,33 +301,11 @@ public class UserService {
 
 
     public String getBlockUser(Long myId, Long userId) {
-        User myUser = getUser(myId);
-        if (myUser.getId() != myId)
-            throw new ServiceException(("This user is not in the DB"));
-        User otherUser = getUser(userId);
-        if (otherUser.getId() != userId)
-            throw new ServiceException(("This user is not in the DB"));
-        int index = -1;
-        int i=0;
-        while(index==-1 && i<myUser.getChatsUser1().size()){
-            if(myUser.getChatsUser1().get(i).compare(myUser,otherUser)) index=i;
-            i++;
-        }
-        if(index!=-1){
-            return String.valueOf(myUser.getChatsUser1().get(index).getBlock());
-        }
-        else{
-            i=0;
-            while(index==-1 && i<myUser.getChatsUser2().size()){
-                if(myUser.getChatsUser2().get(i).compare(myUser,otherUser)) index=i;
-                i++;
-            }
-            if(index!=-1){
-                return String.valueOf(myUser.getChatsUser2().get(index).getBlock());
-            }
-            else{
-                return "0";
-            }
+        UserMessages um = messageService.getUserMessage(myId,userId);
+        if(um!=null){
+            return String.valueOf(um.getBlock());
+        } else {
+            return "0";
         }
     }
 
@@ -339,40 +317,20 @@ public class UserService {
         User otherUser = this.getUser(userId);
         if (otherUser.getId() != userId)
             throw new ServiceException(("This user is not in the DB"));
-        int index = -1;
-        int i=0;
-        while(index==-1 && i<myUser.getChatsUser1().size()){
-            if(myUser.getChatsUser1().get(i).compare(myUser,otherUser)) index=i;
-            i++;
-        }
-        if(index!=-1){
-            if(type==1){
-                myUser.getChatsUser1().get(index).setBlock(myId);
+
+        UserMessages um = messageService.getUserMessage(myId,userId);
+        if(um!=null){
+            if(type==1) {
+                um.setBlock(myId);
                 messageService.closeChat(myId,userId);
             }
-            else myUser.getChatsUser1().get(index).setBlock(0);
+            else um.setBlock(0);
+        } else {
+            um = new UserMessages(myUser,otherUser);
+            if(type==1) um.setBlock(myId);
+            um.setActive(false);
+            myUser.addNewChatUser1(um);
+            otherUser.addNewChatUser2(um);
         }
-        else{
-            i=0;
-            while(index==-1 && i<myUser.getChatsUser2().size()){
-                if(myUser.getChatsUser2().get(i).compare(myUser,otherUser)) index=i;
-                i++;
-            }
-            if(index!=-1){
-                if(type==1) {
-                    myUser.getChatsUser2().get(index).setBlock(myId);
-                    messageService.closeChat(myId,userId);
-                }
-                else myUser.getChatsUser2().get(index).setBlock(0);
-            }
-            else{
-                UserMessages um = new UserMessages(myUser,otherUser);
-                if(type==1) um.setBlock(myId);
-                um.setActive(false);
-                myUser.addNewChatUser1(um);
-                otherUser.addNewChatUser2(um);
-            }
-        }
-
     }
 }
