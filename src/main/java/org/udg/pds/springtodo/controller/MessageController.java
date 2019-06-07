@@ -32,7 +32,7 @@ public class MessageController extends BaseController {
     public String addNewMessage(HttpSession session, @PathVariable("id") Long receiverId, @Valid @RequestBody MessageReceived userMessage){
         Long loggedUserId =getLoggedUser(session);
 
-        messageService.addNewMessage(loggedUserId,receiverId,userMessage.message,userMessage.createdAt);
+        if(messageService.addNewMessage(loggedUserId,receiverId,userMessage.message,userMessage.createdAt)==1) return "Closed";
         return BaseController.OK_MESSAGE;
     }
 

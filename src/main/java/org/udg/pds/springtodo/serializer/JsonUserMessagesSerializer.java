@@ -33,6 +33,7 @@ public class JsonUserMessagesSerializer extends JsonSerializer<UserMessages> {
         gen.writeStringField("image", otherUser.getImage());
         gen.writeEndObject();
         gen.writeBooleanField("chatActive",userMessages.isActive());
+        gen.writeNumberField("blockUser", userMessages.getBlock());
         gen.writeEndObject();
     }
 }

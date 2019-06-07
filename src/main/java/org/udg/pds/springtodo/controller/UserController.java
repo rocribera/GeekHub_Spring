@@ -189,6 +189,26 @@ public class UserController extends BaseController {
         return BaseController.OK_MESSAGE;
     }
 
+    @GetMapping(path="/me/{id}/block")
+    public String getBlockUser(HttpSession session, @PathVariable("id") Long userId) {
+        Long loggedUserId = getLoggedUser(session);
+        return userService.getBlockUser(loggedUserId,userId);
+    }
+
+    @PostMapping(path="/me/{id}/block")
+    public String blockUser(HttpSession session, @PathVariable("id") Long userId) {
+        Long loggedUserId = getLoggedUser(session);
+        userService.blockUser(loggedUserId,userId,1);
+        return BaseController.OK_MESSAGE;
+    }
+
+    @DeleteMapping(path="/me/{id}/block")
+    public String unblockUser(HttpSession session, @PathVariable("id") Long userId) {
+        Long loggedUserId = getLoggedUser(session);
+        userService.blockUser(loggedUserId,userId,0);
+        return BaseController.OK_MESSAGE;
+    }
+
     static class LoginUser {
         @NotNull
         public String username;

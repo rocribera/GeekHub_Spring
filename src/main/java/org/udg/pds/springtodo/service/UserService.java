@@ -28,6 +28,9 @@ public class UserService {
   @Autowired
   private PostService postService;
 
+  @Autowired
+  private MessageService messageService;
+
   public UserRepository crud() {
     return userRepository;
   }
@@ -297,6 +300,37 @@ public class UserService {
     }
 
 
+    public String getBlockUser(Long myId, Long userId) {
+        UserMessages um = messageService.getUserMessage(myId,userId);
+        if(um!=null){
+            return String.valueOf(um.getBlock());
+        } else {
+            return "0";
+        }
+    }
 
+    @Transactional
+    public void blockUser(Long myId, Long userId, int type) {
+        User myUser = this.getUser(myId);
+        if (myUser.getId() != myId)
+            throw new ServiceException(("This user is not in the DB"));
+        User otherUser = this.getUser(userId);
+        if (otherUser.getId() != userId)
+            throw new ServiceException(("This user is not in the DB"));
 
+        UserMessages um = messageService.getUserMessage(myId,userId);
+        if(um!=null){
+            if(type==1) {
+                um.setBlock(myId);
+                messageService.closeChat(myId,userId);
+            }
+            else um.setBlock(0);
+        } else {
+            um = new UserMessages(myUser,otherUser);
+            if(type==1) um.setBlock(myId);
+            um.setActive(false);
+            myUser.addNewChatUser1(um);
+            otherUser.addNewChatUser2(um);
+        }
+    }
 }
