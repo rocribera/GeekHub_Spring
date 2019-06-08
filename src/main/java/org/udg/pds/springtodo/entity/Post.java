@@ -95,4 +95,6 @@ public class Post implements Serializable {
     public void addUserFollowing(User user){ followers.add(user); }
 
     public void removeUserFollowing(User user) { followers.remove(user); }
+
+    public void setDescription(String desc) { this.description = desc; }
 }

@@ -129,4 +129,12 @@ public class PostService {
 
         return post.getFollowers();
     }
+
+    @Transactional
+    public void editPost(Long postId, String description) {
+        Post post = this.getPost(postId);
+        if (post.getId() != postId)
+            throw new ServiceException(("This post is not in the DB"));
+        post.setDescription(description);
+    }
 }

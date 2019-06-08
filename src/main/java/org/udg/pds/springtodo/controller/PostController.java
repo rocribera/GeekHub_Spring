@@ -7,6 +7,8 @@ import org.udg.pds.springtodo.entity.User;
 import org.udg.pds.springtodo.service.PostService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 @RequestMapping(path="/posts")
@@ -38,5 +40,18 @@ public class PostController extends BaseController{
         postService.deletePost(postId,userId);
         postService.crud().deleteById(postId);
         return BaseController.OK_MESSAGE;
+    }
+
+    @PostMapping(path="/{id}")
+    public String editPost(HttpSession session,
+                           @PathVariable("id") Long postId,@Valid @RequestBody EditPost ep) {
+
+        postService.editPost(postId, ep.description);
+        return BaseController.OK_MESSAGE;
+    }
+
+    static class EditPost {
+        @NotNull
+        public String description;
     }
 }
