@@ -9,7 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.udg.pds.springtodo.entity.*;
+import org.udg.pds.springtodo.entity.Category;
+import org.udg.pds.springtodo.entity.Game;
+import org.udg.pds.springtodo.entity.Post;
+import org.udg.pds.springtodo.entity.User;
 import org.udg.pds.springtodo.service.*;
 
 import javax.annotation.PostConstruct;

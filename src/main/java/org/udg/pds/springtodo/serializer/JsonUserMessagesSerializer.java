@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import org.udg.pds.springtodo.controller.MessageController;
 import org.udg.pds.springtodo.entity.User;
 import org.udg.pds.springtodo.entity.UserMessages;
-import org.udg.pds.springtodo.service.MessageService;
 
 import java.io.IOException;
 

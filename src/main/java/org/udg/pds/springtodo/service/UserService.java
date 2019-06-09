@@ -11,7 +11,10 @@ import org.udg.pds.springtodo.entity.*;
 import org.udg.pds.springtodo.repository.UserRepository;
 import org.udg.pds.springtodo.repository.UserValorationRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
