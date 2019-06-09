@@ -551,6 +551,150 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Chatting with user 2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"message\": \"Hola molt bones\",\n    \"createdAt\": \"2019-05-24T21:48:31\",\n    \"sendByMe\": true\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/message/me/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"message",
+						"me",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all messages with user 2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/message/me/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"message",
+						"me",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get open chats from user",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/message/me",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"message",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get block User with id = 2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/me/2/block",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"me",
+						"2",
+						"block"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Block User with id = 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/me/2/block",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"me",
+						"2",
+						"block"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete block from user with id = 2",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/me/2/block",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"me",
+						"2",
+						"block"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Post with id = 1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
 		}
 	]
 }
