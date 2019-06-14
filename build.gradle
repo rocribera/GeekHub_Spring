@@ -2,11 +2,7 @@ buildscript {
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.5.RELEASE")
-    }
 }
-
 
 plugins {
     id 'java'
@@ -29,15 +25,16 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     // JPA Data (We are going to use Repositories, Entities, Hibernate, etc...)
-    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     // Use MySQL Connector-J
-    compile 'mysql:mysql-connector-java'
+    implementation 'mysql:mysql-connector-java'
+    implementation 'io.minio:minio:6.0.4'
+    implementation 'commons-io:commons-io:2.6'
+
     compileOnly 'org.projectlombok:lombok:1.18.4'
-    compile group: 'io.minio', name: 'minio', version: '5.0.6'
     apt 'org.projectlombok:lombok:1.18.4'
-    compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
     implementation 'com.google.firebase:firebase-admin:6.8.1'
 
