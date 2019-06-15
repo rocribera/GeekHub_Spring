@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.udg.pds.springtodo.Global;
 import org.udg.pds.springtodo.controller.exceptions.ControllerException;
+import org.udg.pds.springtodo.service.UserService;
 
 import javax.servlet.http.HttpSession;
 import java.io.InputStream;
@@ -24,10 +25,12 @@ public class ImageController extends BaseController {
     @Autowired
     Global global;
 
+    @Autowired
+    UserService userService;
+
     @PostMapping
     public String upload(HttpSession session,
                          @RequestParam("file") MultipartFile file) {
-
         MinioClient minioClient = global.getMinioClient();
         if (minioClient == null)
             throw new ControllerException("Minio client not configured");
@@ -45,10 +48,13 @@ public class ImageController extends BaseController {
                     istream,
                     contentType);
 
+            // Update the user image in database
+            Long userId = getLoggedUser(session);
+            userService.updateProfileImage(userId, objectName);
+
         } catch (Exception e) {
             throw new ControllerException("Error saving file: " + e.getMessage());
         }
-
 
         return BaseController.OK_MESSAGE;
     }
