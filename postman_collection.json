@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "cc976876-ac2f-47dc-9928-9a79aae3eb4d",
+		"_postman_id": "e1a2eed8-0764-4738-b7bb-e955956a32f5",
 		"name": "All Commands",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -692,6 +692,67 @@
 				"header": [],
 				"url": {
 					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload an image with minio",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/atp/Desktop/Adrià/Imatges/prova2.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/images",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"images"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download an image with minio",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/images/prova1.jpg",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"images",
+						"prova1.jpg"
+					]
 				}
 			},
 			"response": []
