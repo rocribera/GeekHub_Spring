@@ -185,7 +185,7 @@ public class UserController extends BaseController {
     @PostMapping(path="/me")
     public String updateProfileInfo(HttpSession session, @Valid  @RequestBody UpdateProfile updatedProfile){
         Long loggedUserId = getLoggedUser(session);
-        userService.updateProfile(loggedUserId,updatedProfile.name,updatedProfile.description,updatedProfile.image);
+        userService.updateProfile(loggedUserId,updatedProfile.name,updatedProfile.description,updatedProfile.image,updatedProfile.updatedImage);
         return BaseController.OK_MESSAGE;
     }
 
@@ -240,6 +240,8 @@ public class UserController extends BaseController {
         public String description;
 
         public String image;
+
+        public boolean updatedImage;
     }
 
 }

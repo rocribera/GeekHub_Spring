@@ -186,7 +186,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateProfile(Long userId, String name, String description, String image){
+    public void updateProfile(Long userId, String name, String description, String image, boolean updatedImage){
         User user = this.getUser(userId);
 
         if (user.getId() != userId)
@@ -195,6 +195,7 @@ public class UserService {
         if(name!="") user.setName(name);
         if(description!="") user.setDescription(description);
         if(image!="") user.setImage(image);
+        user.setUpdatedImage(updatedImage);
     }
 
     @Transactional
@@ -344,6 +345,7 @@ public class UserService {
         if (user.getId() != userId)
             throw new ServiceException(("This user is not in the DB"));
 
-        if(image!="") user.setImage(image);
+        user.setImage(image);
+        user.setUpdatedImage(true);
     }
 }

@@ -47,9 +47,6 @@ public class User implements Serializable {
     @JsonView(Views.Public.class)
     private String token;
 
-    @JsonView(Views.Public.class)
-    private boolean updatedImage;
-
     @NotNull
     @JsonView(Views.Private.class)
     private String email;
@@ -76,6 +73,9 @@ public class User implements Serializable {
 
     @JsonView(Views.Public.class)
     private String image;
+
+    @JsonView(Views.Public.class)
+    private boolean updatedImage;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
@@ -146,6 +146,10 @@ public class User implements Serializable {
     public String getImage() { return this.image; }
 
     public void setImage(String image) { this.image = image; }
+
+    public boolean getUpdatedImage() { return this.updatedImage; }
+
+    public void setUpdatedImage(boolean b) { this.updatedImage = b; }
 
     public Collection<Post> getFollowedPosts() {
         followedPosts.size();
