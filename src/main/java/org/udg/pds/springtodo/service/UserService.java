@@ -64,7 +64,6 @@ public class UserService {
       throw new ServiceException("Username already exists");
 
     User nu = new User(username, email, password);
-    nu.setImage("prova.jpg");
     userRepository.save(nu);
     return nu;
   }

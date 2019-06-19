@@ -21,6 +21,7 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public User() {
+        this.updatedImage = false;
     }
 
     public User(String name, String email, String password) {
@@ -28,7 +29,8 @@ public class User implements Serializable {
         this.email = email;
         this.password = password;
         this.ownPosts = new ArrayList<>();
-        this.valoration=2.5;
+        this.valoration = 2.5;
+        this.updatedImage = false;
         this.image = null;
         this.token = null;
     }
@@ -44,6 +46,9 @@ public class User implements Serializable {
 
     @JsonView(Views.Public.class)
     private String token;
+
+    @JsonView(Views.Public.class)
+    private boolean updatedImage;
 
     @NotNull
     @JsonView(Views.Private.class)
@@ -105,7 +110,7 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getToken(){ return token; }
+    public String getToken() { return token; }
 
     public void setToken(String tok) { this.token = tok; }
 
