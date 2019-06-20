@@ -71,7 +71,14 @@ public class ImageController extends BaseController {
             HttpHeaders headers = new HttpHeaders();
             // headers.setContentLength(body.contentLength());
             // headers.setContentDispositionFormData("attachment", "test.csv");
-            headers.setContentType(MediaType.parseMediaType(URLConnection.guessContentTypeFromName(filename)));
+            // Ok for most cases
+            String contentType = URLConnection.guessContentTypeFromName(filename);
+            // For some rebels like webp
+            if (contentType == null) {
+                contentType = "application/octet-stream";
+            }
+            headers.setContentType(MediaType.parseMediaType(contentType));
+            
             return ResponseEntity.ok().headers(headers).body(body);
 
         } catch (Exception e) {
