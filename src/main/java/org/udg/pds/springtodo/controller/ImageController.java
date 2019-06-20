@@ -29,8 +29,7 @@ public class ImageController extends BaseController {
     UserService userService;
 
     @PostMapping
-    public String upload(HttpSession session,
-                         @RequestParam("file") MultipartFile file) {
+    public String upload(HttpSession session, @RequestParam("file") MultipartFile file) {
         MinioClient minioClient = global.getMinioClient();
         if (minioClient == null)
             throw new ControllerException("Minio client not configured");

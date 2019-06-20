@@ -30,8 +30,8 @@ public class User implements Serializable {
         this.password = password;
         this.ownPosts = new ArrayList<>();
         this.valoration = 2.5;
-        this.updatedImage = false;
-        this.image = null;
+        this.updatedImage = true;
+        this.image = "prova1.jpg";
         this.token = null;
     }
 
