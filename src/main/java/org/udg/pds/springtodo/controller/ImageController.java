@@ -78,7 +78,7 @@ public class ImageController extends BaseController {
                 contentType = "application/octet-stream";
             }
             headers.setContentType(MediaType.parseMediaType(contentType));
-            
+
             return ResponseEntity.ok().headers(headers).body(body);
 
         } catch (Exception e) {
