@@ -21,6 +21,7 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public User() {
+        this.updatedImage = false;
     }
 
     public User(String name, String email, String password) {
@@ -28,8 +29,9 @@ public class User implements Serializable {
         this.email = email;
         this.password = password;
         this.ownPosts = new ArrayList<>();
-        this.valoration=2.5;
-        this.image = null;
+        this.valoration = 2.5;
+        this.updatedImage = true;
+        this.image = "prova1.jpg";
         this.token = null;
     }
 
@@ -72,6 +74,9 @@ public class User implements Serializable {
     @JsonView(Views.Public.class)
     private String image;
 
+    @JsonView(Views.Public.class)
+    private boolean updatedImage;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonIgnore
@@ -105,7 +110,7 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getToken(){ return token; }
+    public String getToken() { return token; }
 
     public void setToken(String tok) { this.token = tok; }
 
@@ -141,6 +146,10 @@ public class User implements Serializable {
     public String getImage() { return this.image; }
 
     public void setImage(String image) { this.image = image; }
+
+    public boolean getUpdatedImage() { return this.updatedImage; }
+
+    public void setUpdatedImage(boolean b) { this.updatedImage = b; }
 
     public Collection<Post> getFollowedPosts() {
         followedPosts.size();

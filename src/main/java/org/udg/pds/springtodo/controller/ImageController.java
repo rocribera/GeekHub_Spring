@@ -5,14 +5,17 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.udg.pds.springtodo.Global;
 import org.udg.pds.springtodo.controller.exceptions.ControllerException;
+import org.udg.pds.springtodo.service.UserService;
 
 import javax.servlet.http.HttpSession;
 import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.UUID;
 
 @RequestMapping(path = "/images")
@@ -22,10 +25,11 @@ public class ImageController extends BaseController {
     @Autowired
     Global global;
 
-    @PostMapping
-    public String upload(HttpSession session,
-                         @RequestParam("file") MultipartFile file) {
+    @Autowired
+    UserService userService;
 
+    @PostMapping
+    public String upload(HttpSession session, @RequestParam("file") MultipartFile file) {
         MinioClient minioClient = global.getMinioClient();
         if (minioClient == null)
             throw new ControllerException("Minio client not configured");
@@ -43,10 +47,13 @@ public class ImageController extends BaseController {
                     istream,
                     contentType);
 
+            // Update the user image in database
+            Long userId = getLoggedUser(session);
+            userService.updateProfileImage(userId, objectName);
+
         } catch (Exception e) {
             throw new ControllerException("Error saving file: " + e.getMessage());
         }
-
 
         return BaseController.OK_MESSAGE;
     }
@@ -60,8 +67,19 @@ public class ImageController extends BaseController {
 
         try {
             InputStream file = minioClient.getObject(global.getMinioBucket(), filename);
-            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\"file\"")
-                    .body(new InputStreamResource(file));
+            InputStreamResource body = new InputStreamResource(file);
+            HttpHeaders headers = new HttpHeaders();
+            // headers.setContentLength(body.contentLength());
+            // headers.setContentDispositionFormData("attachment", "test.csv");
+            // Ok for most cases
+            String contentType = URLConnection.guessContentTypeFromName(filename);
+            // For some rebels like webp
+            if (contentType == null) {
+                contentType = "application/octet-stream";
+            }
+            headers.setContentType(MediaType.parseMediaType(contentType));
+
+            return ResponseEntity.ok().headers(headers).body(body);
 
         } catch (Exception e) {
             throw new ControllerException("Error downloading file: " + e.getMessage());

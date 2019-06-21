@@ -25,12 +25,16 @@ public class JsonUserMessagesSerializer extends JsonSerializer<UserMessages> {
             otherUser = userMessages.getUser1();
         }
         else throw new IOException("User not detected");
+
         gen.writeNumberField("myUserId",myUser.getId());
         gen.writeObjectFieldStart("otherUser");
         gen.writeNumberField("id",otherUser.getId());
         gen.writeStringField("name",otherUser.getName());
         gen.writeStringField("image", otherUser.getImage());
+        gen.writeBooleanField("updatedImage", otherUser.getUpdatedImage());
         gen.writeEndObject();
+
+
         gen.writeBooleanField("chatActive",userMessages.isActive());
         gen.writeNumberField("blockUser", userMessages.getBlock());
         gen.writeEndObject();
