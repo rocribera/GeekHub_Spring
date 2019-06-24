@@ -68,6 +68,11 @@ public class Global {
     @PostConstruct
     void init() {
 
+        minioURL="http://94.130.183.121:9000";
+        minioAccessKey="QNWFR36H1VJC44DE9QD5";
+        minioSecretKey="psH0KyTV2JN49dmnOVl1xYDIsrqYy0caJStEL29s";
+        minioBucket="pds3c";
+
         logger.info(String.format("Starting Minio connection to URL: %s", minioURL));
         try {
             minioClient = new MinioClient(minioURL, minioAccessKey, minioSecretKey);
